@@ -1,0 +1,301 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2575.7">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="zh-TW"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;EatExplorer - 巷弄探索&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* --- 核心樣式：100% 還原原本設定 --- */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>:root {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--primary-orange: #FF6600;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--glass-bg: rgba(25, 25, 25, 0.85);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--glass-border: rgba(255, 255, 255, 0.15);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--input-bg: rgba(255, 255, 255, 0.1);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--text-color: #ffffff;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--label-color: #cccccc;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--accent-yellow: #FFCC00;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>html, body { overscroll-behavior-y: none; height: 100%; overflow: hidden; position: fixed; width: 100%; margin: 0; padding: 0; background-color: #000; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>html { font-size: 14px; }<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>body { color: #fff; display: flex; align-items: center; justify-content: center; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>#bg-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.bg-slide { position: absolute; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; transition: opacity 1s; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.bg-slide.active { opacity: 0.6; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.container { width: 95%; max-width: 357px; height: 100dvh; z-index: 10; display: flex; flex-direction: column; justify-content: space-between; align-items: center; transition: filter 0.5s ease, transform 0.5s ease; padding: 20px 0; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.container.blur-mode { filter: blur(15px) brightness(0.4); transform: scale(0.95); pointer-events: none; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.header { width: 100%; flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.logo { font-size: 2.77rem; font-weight: 800; color: var(--primary-orange); line-height: 1.2; letter-spacing: -1px; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.tagline { font-size: 1.2rem; opacity: 0.8; margin-top: 6px; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.glass-card { width: 100%; background: rgba(20, 20, 20, 0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 20px; padding: 18px; border: 1px solid var(--glass-border); text-align: left; flex-shrink: 0; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.full-width { grid-column: span 2; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>label { font-size: 0.75rem; color: var(--label-color); margin-bottom: 4px; display: block; font-weight: 600; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.input-box { background: var(--input-bg); border-radius: 10px; height: 38px; display: flex; align-items: center; padding: 0 10px; border: 1px solid transparent; transition: 0.3s; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.input-box:focus-within { border-color: var(--primary-orange); box-shadow: 0 0 8px rgba(255, 102, 0, 0.3); }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>select { background: transparent; border: none; color: white; width: 100%; outline: none; font-size: 0.85rem; appearance: none; cursor: pointer; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>select option { background-color: #222; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.toggle-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.toggle-btn { background: var(--input-bg); height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid transparent; font-size: 0.85rem; transition: 0.3s; user-select: none; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.toggle-btn.selected { background: rgba(255,102,0,0.2); border-color: var(--primary-orange); color: var(--primary-orange); font-weight: bold; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>#btn-open.selected { background: rgba(46,204,113,0.15); border-color: #2ecc71; color: #2ecc71; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.footer-action { width: 100%; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.cta-button { width: 100%; background: linear-gradient(180deg, #FF8533, #FF6600); border: none; padding: 16px; font-weight: 700; border-radius: 16px; color: #fff; cursor: pointer; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(255, 102, 0, 0.4); }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.cta-button:disabled { background: linear-gradient(180deg, #888, #666); cursor: not-allowed; box-shadow: none; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.usage-hint { font-size: 0.85rem; margin-top: 10px; opacity: 0.7; color: #fff; font-weight: 500; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>#loader { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; background: none; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.spinner { width: 50px; height: 50px; border: 5px solid rgba(255,102,0,0.1); border-top-color: var(--primary-orange); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 12px; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>@keyframes spin { to { transform: rotate(360deg); } }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>#swiper-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; display: none; flex-direction: column; align-items: center; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.card-stack { width: 100%; max-width: 340px; height: 100%; display: flex; flex-direction: column; align-items: center; overflow-y: auto; padding: 20px 0 120px 0; gap: 20px; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.swipe-card-wrapper { width: 92%; flex-shrink: 0; transition: transform 0.4s ease, opacity 0.4s ease; touch-action: pan-y; position: relative; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.swipe-card { width: 100%; background: var(--glass-bg); border-radius: 24px; border: 1px solid var(--glass-border); padding: 20px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; overflow: hidden; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.stamp { position: absolute; top: 20px; padding: 5px 15px; border: 4px solid; border-radius: 8px; font-size: 2rem; font-weight: 900; opacity: 0; pointer-events: none; z-index: 10; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.stamp-like { left: 20px; color: #2ecc71; border-color: #2ecc71; transform: rotate(-15deg); }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.stamp-nope { right: 20px; color: #e74c3c; border-color: #e74c3c; transform: rotate(15deg); }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.swipe-card h3 { color: var(--primary-orange); font-size: 1.4rem; font-weight: 800; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.card-badges { display: flex; gap: 6px; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.card-badge { padding: 3px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.badge-rating { background: var(--accent-yellow); color: #000; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.badge-price { background: rgba(255,255,255,0.1); color: #eee; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.info-row { font-size: 0.85rem; display: flex; gap: 6px; color: #ddd; line-height: 1.4; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.info-label { color: var(--primary-orange); font-weight: bold; flex-shrink: 0; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.card-summary { font-size: 0.88rem; font-style: italic; opacity: 0.85; border-left: 2px solid var(--primary-orange); padding-left: 10px; margin: 5px 0; line-height: 1.4; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.card-map-btn { background: var(--primary-orange); color: #fff; text-decoration: none; padding: 12px; border-radius: 14px; text-align: center; font-weight: bold; margin-top: 10px; font-size: 0.95rem; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.close-swiper { position: fixed; bottom: 40px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 12px 30px; border-radius: 50px; cursor: pointer; z-index: 120; font-weight: bold; backdrop-filter: blur(10px); }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>#round-info { background: rgba(255, 102, 0, 0.2); border: 1px solid var(--primary-orange); padding: 8px 20px; border-radius: 50px; margin-top: 30px; margin-bottom: 10px; font-weight: bold; z-index: 110; pointer-events: none; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body touch-action="none"&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="bg-container"&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="container" id="main-ui"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="header"&gt;&lt;div class="logo"&gt;EatExplorer&lt;/div&gt;&lt;div class="tagline"&gt;探索全台隱藏美味，享受極致饗宴&lt;/div&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="glass-card"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="form-grid"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="form-group"&gt;&lt;label&gt;📍 縣市&lt;/label&gt;&lt;div class="input-box"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;select id="city" onchange="updateDistricts(); checkTransAvailability();"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;optgroup label="北部地區"&gt;&lt;option value="Taipei" selected&gt;台北市&lt;/option&gt;&lt;option value="NewTaipei"&gt;新北市&lt;/option&gt;&lt;option value="Keelung"&gt;基隆市&lt;/option&gt;&lt;option value="Taoyuan"&gt;桃園市&lt;/option&gt;&lt;option value="HsinchuCity"&gt;新竹市&lt;/option&gt;&lt;option value="HsinchuCounty"&gt;新竹縣&lt;/option&gt;&lt;option value="Yilan"&gt;宜蘭縣&lt;/option&gt;&lt;/optgroup&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;optgroup label="中部地區"&gt;&lt;option value="Miaoli"&gt;苗栗縣&lt;/option&gt;&lt;option value="Taichung"&gt;台中市&lt;/option&gt;&lt;option value="Changhua"&gt;彰化縣&lt;/option&gt;&lt;option value="Nantou"&gt;南投縣&lt;/option&gt;&lt;option value="Yunlin"&gt;雲林縣&lt;/option&gt;&lt;/optgroup&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;optgroup label="南部地區"&gt;&lt;option value="ChiayiCity"&gt;嘉義市&lt;/option&gt;&lt;option value="ChiayiCounty"&gt;嘉義縣&lt;/option&gt;&lt;option value="Tainan"&gt;台南市&lt;/option&gt;&lt;option value="Kaohsiung"&gt;高雄市&lt;/option&gt;&lt;option value="Pingtung"&gt;屏東縣&lt;/option&gt;&lt;/optgroup&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;optgroup label="東部與離島"&gt;&lt;option value="Hualien"&gt;花蓮縣&lt;/option&gt;&lt;option value="Taitung"&gt;台東縣&lt;/option&gt;&lt;option value="Penghu"&gt;澎湖縣&lt;/option&gt;&lt;option value="Kinmen"&gt;金門縣&lt;/option&gt;&lt;option value="Lienchiang"&gt;連江縣&lt;/option&gt;&lt;/optgroup&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="form-group"&gt;&lt;label&gt;🏙️ 行政區&lt;/label&gt;&lt;div class="input-box"&gt;&lt;select id="district" onchange="checkTransAvailability();"&gt;&lt;option&gt;全區&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="form-group full-width"&gt;&lt;label&gt;🚆 交通偏好&lt;/label&gt;&lt;div class="input-box"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;select id="transport" onchange="checkTransAvailability()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;option value="none" selected&gt;🤷‍♂️ 不拘&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;option value="mrt"&gt;🚇 鄰近捷運站&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;option value="hsr"&gt;🚄 鄰近高鐵站&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;option value="train"&gt;🚂 鄰近火車站&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;option value="airport"&gt;✈️ 鄰近機場&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="form-group full-width" id="mrt-section" style="display:none;"&gt;&lt;label id="trans-label"&gt;🚉 指定站點&lt;/label&gt;&lt;div class="input-box"&gt;&lt;select id="mrt-station"&gt;&lt;/select&gt;&lt;/div&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="form-group full-width"&gt;&lt;label&gt;🤤 想吃什麼？&lt;/label&gt;&lt;div class="input-box"&gt;&lt;select id="food"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="all"&gt;全部 (什麼都想吃)&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;optgroup label="🔥 熱門精選"&gt;&lt;option value="hotpot"&gt;火鍋 / 麻辣鍋 / 涮涮鍋&lt;/option&gt;&lt;option value="bbq"&gt;燒肉 / 日式烤肉 / 韓式烤肉&lt;/option&gt;&lt;option value="steak"&gt;牛排 / 鐵板燒&lt;/option&gt;&lt;option value="buffet"&gt;吃到飽 (Buffet)&lt;/option&gt;&lt;/optgroup&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;optgroup label="🍜 台式與中式"&gt;&lt;option value="taiwanese_snack"&gt;台灣小吃 / 路邊攤&lt;/option&gt;&lt;option value="beef_noodle"&gt;牛肉麵&lt;/option&gt;&lt;option value="rechao"&gt;海鮮熱炒 / 合菜&lt;/option&gt;&lt;option value="hot_soup"&gt;滷味 / 鹽酥雞 / 宵夜&lt;/option&gt;&lt;/optgroup&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;optgroup label="🍣 日式料理"&gt;&lt;option value="ramen"&gt;日式拉麵 / 烏龍麵&lt;/option&gt;&lt;option value="sushi"&gt;壽司 / 生魚片 / 丼飯&lt;/option&gt;&lt;option value="izakaya"&gt;居酒屋 / 串燒&lt;/option&gt;&lt;option value="curry"&gt;日式咖哩 / 定食&lt;/option&gt;&lt;/optgroup&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;optgroup label="🌍 異國風味"&gt;&lt;option value="korean"&gt;韓式料理 / 炸雞&lt;/option&gt;&lt;option value="thai_viet"&gt;泰式 / 越式料理&lt;/option&gt;&lt;option value="american"&gt;美式漢堡 / 炸物&lt;/option&gt;&lt;option value="italian"&gt;義式料理 / 披薩 / 義大利麵&lt;/option&gt;&lt;/optgroup&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;optgroup label="☕ 放鬆時刻"&gt;&lt;option value="brunch"&gt;早午餐 (Brunch)&lt;/option&gt;&lt;option value="cafe"&gt;咖啡廳 / 下午茶 / 甜點&lt;/option&gt;&lt;option value="bistro"&gt;餐酒館 / Bar&lt;/option&gt;&lt;/optgroup&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;optgroup label="🥬 其他"&gt;&lt;option value="vegetarian"&gt;素食 / 蔬食&lt;/option&gt;&lt;option value="healthy"&gt;健康餐盒 / 輕食&lt;/option&gt;&lt;/optgroup&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/select&gt;&lt;/div&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="form-group full-width"&gt;&lt;label&gt;👥 人數&lt;/label&gt;&lt;div class="input-box"&gt;&lt;select id="people"&gt;&lt;option selected&gt;1~2 人&lt;/option&gt;&lt;option&gt;2~4 人&lt;/option&gt;&lt;option&gt;4~6 人&lt;/option&gt;&lt;option&gt;6 人以上&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="form-group full-width"&gt;&lt;label&gt;🎯 用餐目的&lt;/label&gt;&lt;div class="input-box"&gt;&lt;select id="purpose"&gt;&lt;option&gt;🤷‍♂️ 不拘 (隨意吃吃)&lt;/option&gt;&lt;option&gt;👯 朋友聚餐 (熱鬧)&lt;/option&gt;&lt;option&gt;💑 情侶約會 (氣氛)&lt;/option&gt;&lt;option&gt;👨‍👩‍👧‍👦 家庭聚會 (長輩/小孩)&lt;/option&gt;&lt;option&gt;🧘 一人獨享 (安靜)&lt;/option&gt;&lt;option&gt;💼 商務宴請 (正式)&lt;/option&gt;&lt;option&gt;🌙 宵夜場 (深夜)&lt;/option&gt;&lt;option&gt;📸 IG打卡/網美店&lt;/option&gt;&lt;option&gt;⚡ 快速解決 (趕時間)&lt;/option&gt;&lt;option&gt;🎉 慶生/紀念日&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="form-group full-width"&gt;&lt;label&gt;💰 預算範圍&lt;/label&gt;&lt;div class="input-box"&gt;&lt;select id="budget"&gt;&lt;option value="low"&gt;💵 平價 (&amp;lt;$300)&lt;/option&gt;&lt;option value="mid"&gt;💵💵 中價位 ($300～$800)&lt;/option&gt;&lt;option value="high"&gt;💵💵💵 高級 (&amp;gt;$800)&lt;/option&gt;&lt;option value="luxury"&gt;💎 頂級奢華 (&amp;gt;$2000)&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="form-group full-width"&gt;&lt;div class="toggle-row"&gt;&lt;div id="btn-hidden" class="toggle-btn" onclick="this.classList.toggle('selected')"&gt;🤫 隱藏版&lt;/div&gt;&lt;div id="btn-open" class="toggle-btn" onclick="this.classList.toggle('selected')"&gt;🕒 營業中&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="footer-action"&gt;&lt;button id="search-btn" class="cta-button" onclick="handleSearchClick()"&gt;開始探索美食&lt;/button&gt;&lt;div id="usage-text" class="usage-hint"&gt;今日剩餘次數：-- 次&lt;/div&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="loader"&gt;&lt;div class="spinner"&gt;&lt;/div&gt;&lt;p style="color:white; font-weight:bold;"&gt;正在穿梭巷弄中...&lt;/p&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="swiper-overlay"&gt;&lt;div id="round-info"&gt;&lt;/div&gt;&lt;div class="card-stack" id="stack"&gt;&lt;/div&gt;&lt;button class="close-swiper" onclick="resetUI()"&gt;← 返回調整&lt;/button&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const DAILY_LIMIT = 15;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* --- 背景輪播 (100% 完整保留) --- */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const images = ['https://images.unsplash.com/photo-1555939594-58d7cb561ad1', 'https://images.unsplash.com/photo-1594046243098-0fceea9d451e', 'https://images.unsplash.com/photo-1563245372-f21724e3856d', 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd', 'https://images.unsplash.com/photo-1504674900247-0877df9cc836', 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38'];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const bg = document.getElementById('bg-container');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>images.forEach((url, i) =&gt; { const div = document.createElement('div'); div.className = 'bg-slide' + (i===0?' active':''); div.style.backgroundImage = `url('${url}?auto=format&amp;fit=crop&amp;w=1200')`; bg.appendChild(div); });</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let slideIdx = 0; setInterval(() =&gt; { const s = document.querySelectorAll('.bg-slide'); s[slideIdx].classList.remove('active'); slideIdx = (slideIdx+1)%s.length; s[slideIdx].classList.add('active'); }, 6000);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const cityData = { 'Taipei': ['全區', '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區'], 'NewTaipei': ['全區', '板橋區', '三重區', '中和區', '永和區', '新莊區', '新店區', '土城區', '蘆洲區', '樹林區', '鶯歌區', '三峽區', '淡水區', '汐止區', '瑞芳區', '五股區', '泰山區', '林口區', '深坑區', '石碇區', '坪林區', '三芝區', '石門區', '八里區', '平溪區', '雙溪區', '貢寮區', '金山區', '萬里區', '烏來區'], 'Keelung': ['全區', '仁愛區', '信義區', '中正區', '中山區', '安樂區', '暖暖區', '七堵區'], 'Taoyuan': ['全區', '桃園區', '中壢區', '平鎮區', '八德區', '楊梅區', '蘆竹區', '大溪區', '龍潭區', '龜山區', '大園區', '觀音區', '新屋區', '復興區'], 'HsinchuCity': ['全區', '東區', '北區', '香山區'], 'HsinchuCounty': ['全區', '竹北市', '竹東鎮', '新埔鎮', '關西鎮', '湖口鄉', '新豐鄉', '峨眉鄉', '寶山鄉', '北埔鄉', '橫山鄉', '芎林鄉', '尖石鄉', '五峰鄉'], 'Yilan': ['全區', '宜蘭市', '羅東鎮', '蘇澳鎮', '頭城鎮', '礁溪鄉', '壯圍鄉', '員山鄉', '冬山鄉', '五結鄉', '三星鄉', '大同鄉', '南澳鄉'], 'Miaoli': ['全區', '苗栗市', '頭份市', '竹南鎮', '後龍鎮', '通霄鎮', '苑裡鎮', '卓蘭鎮', '造橋鄉', '西湖鄉', '頭屋鄉', '公館鄉', '銅鑼鄉', '三義鄉', '大湖鄉', '獅潭鄉', '三灣鄉', '南庄鄉', '泰安鄉'], 'Taichung': ['全區', '中區', '東區', '南區', '西區', '北區', '北屯區', '西屯區', '南屯區', '太平區', '大里區', '霧峰區', '烏日區', '豐原區', '後里區', '石岡區', '東勢區', '和平區', '新社區', '潭子區', '大雅區', '神岡區', '大肚區', '龍井區', '梧棲區', '清水區', '大甲區', '外埔區', '大安區'], 'Changhua': ['全區', '彰化市', '員林市', '和美鎮', '鹿港鎮', '溪湖鎮', '二林鎮', '田中鎮', '北斗鎮', '花壇鄉', '芬園鄉', '大村鄉', '永靖鄉', '伸港鄉', '線西鄉', '福興鄉', '秀水鄉', '埔心鄉', '埔鹽鄉', '大城鄉', '芳苑鄉', '竹塘鄉', '社頭鄉', '二水鄉', '溪州鄉', '田尾鄉', '埤頭鄉'], 'Nantou': ['全區', '南投市', '埔里鎮', '草屯鎮', '竹山鎮', '集集鎮', '名間鄉', '鹿谷鄉', '中寮鄉', '魚池鄉', '國姓鄉', '水里鄉', '信義鄉', '仁愛鄉'], 'Yunlin': ['全區', '斗六市', '斗南鎮', '虎尾鎮', '西螺鎮', '土庫鎮', '北港鎮', '古坑鄉', '大埤鄉', '莿桐鄉', '林內鄉', '二崙鄉', '崙背鄉', '麥寮鄉', '東勢鄉', '褒忠鄉', '台西鄉', '元長鄉', '四湖鄉', '口湖鄉', '水林鄉'], 'ChiayiCity': ['全區', '東區', '西區'], 'ChiayiCounty': ['全區', '太保市', '朴子市', '布袋鎮', '大林鎮', '民雄鄉', '溪口鄉', '新港鄉', '六腳鄉', '東石鄉', '義竹鄉', '鹿草鄉', '水上鄉', '中埔鄉', '竹崎鄉', '梅山鄉', '番路鄉', '大埔鄉', '阿里山鄉'], 'Tainan': ['全區', '中西區', '東區', '南區', '北區', '安平區', '安南區', '永康區', '歸仁區', '新化區', '玉井區', '仁德區', '關廟區', '官田區', '麻豆區', '佳里區', '新營區', '善化區'], 'Kaohsiung': ['全區', '楠梓區', '左營區', '鼓山區', '三民區', '鹽埕區', '前金區', '新興區', '苓雅區', '前鎮區', '旗津區', '小港區', '鳳山區', '大寮區', '鳥松區', '林園區', '仁武區', '大樹區', '大社區', '岡山區', '路竹區', '旗山區', '美濃區'], 'Pingtung': ['全區', '屏東市', '潮州鎮', '東港鎮', '恆春鎮', '萬丹鄉', '長治鄉', '里港鄉', '內埔鄉', '枋寮鄉', '車城鄉'], 'Hualien': ['全區', '花蓮市', '鳳林鎮', '玉里鎮', '新城鄉', '吉安鄉', '壽豐鄉', '光復鄉', '瑞穗鄉'], 'Taitung': ['全區', '台東市', '成功鎮', '關山鎮', '卑南鄉', '鹿野鄉', '池上鄉', '綠島鄉', '蘭嶼鄉'], 'Penghu': ['全區', '馬公市', '湖西鄉', '白沙鄉', '西嶼鄉'], 'Kinmen': ['全區', '金城鎮', '金湖鎮', '金沙鎮', '金寧鄉'], 'Lienchiang': ['全區', '南竿鄉', '北竿鄉', '莒光鄉', '東引鄉'] };</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function updateDistricts() { const city = document.getElementById('city').value; const distSelect = document.getElementById('district'); distSelect.innerHTML = cityData[city].map(d =&gt; `&lt;option value="${d}"&gt;${d}&lt;/option&gt;`).join(''); }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>updateDistricts();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* --- 交通站點資料庫 (100% 完整保留) --- */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const mrtLinesTaipei = { '板南線 (BL)': ['龍山寺', '西門', '台北車站', '善導寺', '忠孝新生', '忠孝復興', '忠孝敦化', '國父紀念館', '市政府', '永春', '後山埤', '昆陽', '南港', '南港展覽館'], '淡水信義線 (R)': ['象山', '台北101/世貿', '信義安和', '大安', '大安森林公園', '東門', '中正紀念堂', '台大醫院', '台北車站', '中山', '雙連', '民權西路', '圓山', '劍潭', '士林', '芝山', '明德', '石牌', '唭哩岸', '奇岩', '北投', '新北投', '復興崗', '忠義', '關渡'], '松山新店線 (G)': ['景美', '萬隆', '公館', '台電大樓', '古亭', '中正紀念堂', '小南門', '西門', '北門', '中山', '松江南京', '南京復興', '台北小巨蛋', '南京三民', '松山'], '中和新蘆線 (O)': ['古亭', '東門', '忠孝新生', '松江南京', '行天宮', '中山國小', '民權西路', '大橋頭'], '文湖線 (BR)': ['動物園', '木柵', '萬芳社區', '萬芳醫院', '辛亥', '麟光', '六張犁', '科技大樓', '大安', '忠孝復興', '南京復興', '中山國中', '松山機場', '大直', '劍南路', '西湖', '港墘', '文德', '內湖', '大湖公園', '葫洲', '東湖', '南港軟體園區', '南港展覽館'] };</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const mrtLinesNewTaipei = { '板南線 (BL)': ['頂埔', '永寧', '土城', '海山', '亞東醫院', '府中', '板橋', '新埔', '江子翠'], '淡水信義線 (R)': ['竹圍', '紅樹林', '淡水'], '松山新店線 (G)': ['新店', '新店區公所', '七張', '大坪林'], '中和新蘆線 (O)': ['南勢角', '景安', '永安市場', '頂溪', '三重國小', '三和國中', '徐匯中學', '三民高中', '蘆洲', '台北橋', '菜寮', '三重', '先嗇宮', '頭前庄', '新莊', '輔大', '丹鳳', '迴龍'], '環狀線 (Y)': ['大坪林', '十四張', '秀朗橋', '景平', '景安', '中和', '橋和', '中原', '板新', '板橋', '新埔民生', '頭前庄', '幸福', '新北產業園區'] };</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const mrtLinesTaoyuan = { '機場捷運 (A)': ['台北車站', '三重', '新北產業園區', '新莊副都心', '泰山', '泰山貴和', '體育大學', '長庚醫院', '林口', '山鼻', '坑口', '機場第一航廈', '機場第二航廈', '機場旅館', '大園', '橫山', '領航', '高鐵桃園站', '桃園體育園區', '興南', '環北', '老街溪'] };</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const mrtLinesTaichung = { '綠線': ['北屯總站', '舊社', '松竹', '四維國小', '文心崇德', '文心中清', '文華高中', '文心櫻花', '市政府', '水安宮', '文心森林公園', '南屯', '豐樂公園', '大慶', '九張犁', '九德', '烏日', '高鐵台中站'] };</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const mrtLinesKaohsiung = { '紅線 (R)': ['小港', '高雄國際機場', '草衙', '前鎮高中', '凱旋', '獅甲', '三多商圈', '中央公園', '美麗島', '高雄車站', '後驛', '凹子底', '巨蛋', '生態園區', '左營', '世運', '油廠國小', '楠梓科技園區', '後勁', '都會公園', '青埔', '橋頭糖廠', '橋頭火車站', '岡山高醫', '岡山車站'], '橘線 (O)': ['哈瑪星', '鹽埕埔', '前金', '美麗島', '信義國小', '文化中心', '五塊厝', '苓雅運動園區', '衛武營', '鳳山西站', '鳳山', '大東', '鳳山國中', '大寮'], '輕軌 (C)': ['籬仔內', '凱旋瑞田', '前鎮之星', '凱旋中華', '夢時代', '經貿園區', '軟體園區', '高雄展覽館', '旅運中心', '光榮碼頭', '真愛碼頭', '駁二大義', '駁二蓬萊', '哈瑪星', '壽山公園', '文武聖殿', '鼓山區公所', '鼓山', '馬卡道', '台鐵美術館', '美術館', '聯合醫院', '龍華國小', '愛河之心', '新上國小', '灣仔內', '高雄高工', '樹德家商', '科工館', '聖功醫院', '凱旋公園'] };</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const mrtMap = { 'Taipei': { '中正區': ['台北車站', '善導寺', '忠孝新生', '中正紀念堂', '古亭', '西門', '台大醫院'], '萬華區': ['西門', '龍山寺'], '大安區': ['忠孝復興', '忠孝敦化', '國父紀念館', '信義安和', '大安', '科技大樓', '六張犁', '公館', '東門'], '信義區': ['市政府', '永春', '後山埤', '象山', '台北101/世貿'], '中山區': ['中山', '雙連', '民權西路', '圓山', '松江南京', '行天宮', '中山國小', '大直', '劍南路'], '松山區': ['南京復興', '台北小巨蛋', '南京三三民', '松山'], '大同區': ['大橋頭', '中山', '圓山', '民權西路'], '士林區': ['劍潭', '士林', '芝山', '明德'], '北投區': ['石牌', '唭哩岸', '奇岩', '北投', '新北投', '復興崗', '關渡'], '內湖區': ['西湖', '港墘', '文德', '內湖', '大湖公園', '葫洲', '東湖'], '南港區': ['南港', '南港展覽館', '南港軟體園區', '昆陽'], '文山區': ['動物園', '木柵', '萬芳醫院', '萬芳社區', '景美', '萬隆'] }, 'NewTaipei': { '板橋區': ['板橋', '府中', '新埔', '江子翠', '亞東醫院'], '三重區': ['三重', '菜寮', '台北橋', '三重國小', '三和國中', '徐匯中學'], '中和區': ['景安', '南勢角', '永安市場', '中和'], '永和區': ['頂溪', '永安市場'], '新莊區': ['新莊', '輔大', '丹鳳', '迴龍', '頭前庄'], '新店區': ['新店', '七張', '大坪林', '小碧潭', '新店區公所'], '淡水區': ['淡水', '紅樹林', '竹圍'], '林口區': ['林口'] } };</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const hsrMap = { 'Taipei': { '中正區': ['高鐵台北站'], '南港區': ['高鐵南港站'] }, 'NewTaipei': { '板橋區': ['高鐵板橋站'] }, 'Taoyuan': { '中壢區': ['高鐵桃園站'] }, 'HsinchuCounty': { '竹北市': ['高鐵新竹站'] }, 'Miaoli': { '後龍鎮': ['高鐵苗栗站'] }, 'Taichung': { '烏日區': ['高鐵台中站'] }, 'Changhua': { '田中鎮': ['高鐵彰化站'] }, 'Yunlin': { '虎尾鎮': ['高鐵雲林站'] }, 'ChiayiCounty': { '太保市': ['高鐵嘉義站'] }, 'Tainan': { '歸仁區': ['高鐵台南站'] }, 'Kaohsiung': { '左營區': ['高鐵左營站'] } };</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const trainMap = { 'Keelung': { '仁愛區': ['基隆'], '暖暖區': ['八堵'], '七堵區': ['七堵'] }, 'Taipei': { '中正區': ['台北'], '萬華區': ['萬華'], '松山區': ['松山'], '南港區': ['南港'] }, 'NewTaipei': { '板橋區': ['板橋'], '汐止區': ['汐止', '汐科'], '樹林區': ['樹林'], '鶯歌區': ['鶯歌'], '瑞芳區': ['瑞芳'] }, 'Taoyuan': { '桃園區': ['桃園'], '中壢區': ['中壢'], '楊梅區': ['楊梅'] }, 'Taichung': { '中區': ['台中'], '烏日區': ['新烏日'], '豐原區': ['豐原'] }, 'Tainan': { '東區': ['台南'], '永康區': ['永康'] }, 'Kaohsiung': { '三民區': ['高雄'], '左營區': ['新左營'], '鳳山區': ['鳳山'] }, 'Hualien': { '花蓮市': ['花蓮'] }, 'Taitung': { '台東市': ['台東'] } };</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const airportMap = { 'Taipei': { '松山區': ['台北松山機場'] }, 'Taoyuan': { '大園區': ['桃園國際機場'] }, 'Taichung': { '沙鹿區': ['台中國際機場'] }, 'Kaohsiung': { '小港區': ['高雄小港機場'] }, 'Penghu': { '湖西鄉': ['澎湖機場'] }, 'Kinmen': { '金湖鎮': ['金門機場'] }, 'Lienchiang': { '南竿鄉': ['馬祖南竿機場'] }, 'Taitung': { '台東市': ['台東機場'] } };</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function checkTransAvailability() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const city = document.getElementById('city').value;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const district = document.getElementById('district').value;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const transport = document.getElementById('transport').value;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const mrtSec = document.getElementById('mrt-section');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const mrtSel = document.getElementById('mrt-station');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const label = document.getElementById('trans-label');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (transport === 'none') { mrtSec.style.display = 'none'; return; }</p>
+<p class="p1"><span class="Apple-converted-space">            </span>mrtSec.style.display = 'block';</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (transport === 'mrt') {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>label.innerText = "🚇 指定捷運站 (依線路分類)";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>let linesData = (city === 'Taipei' ? mrtLinesTaipei : (city === 'NewTaipei' ? mrtLinesNewTaipei : (city === 'Taoyuan' ? mrtLinesTaoyuan : (city === 'Taichung' ? mrtLinesTaichung : (city === 'Kaohsiung' ? mrtLinesKaohsiung : null)))));</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (district === '全區' &amp;&amp; linesData) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>let html = '&lt;option value=""&gt;--- 請選擇捷運站 ---&lt;/option&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>for (const line in linesData) { html += `&lt;optgroup label="${line}"&gt;`; linesData[line].forEach(s =&gt; html += `&lt;option value="${s}"&gt;${s}站&lt;/option&gt;`); html += `&lt;/optgroup&gt;`; }</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>mrtSel.innerHTML = html;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>} else if (mrtMap[city] &amp;&amp; mrtMap[city][district]) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>mrtSel.innerHTML = '&lt;option value=""&gt;--- 請選擇 ---&lt;/option&gt;' + mrtMap[city][district].map(s =&gt; `&lt;option value="${s}"&gt;${s}站&lt;/option&gt;`).join('');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>} else { mrtSel.innerHTML = '&lt;option value=""&gt;該區暫無捷運站&lt;/option&gt;'; }</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>let currentMap = (transport === 'train' ? trainMap : (transport === 'hsr' ? hsrMap : airportMap));</p>
+<p class="p1"><span class="Apple-converted-space">                </span>label.innerText = `🚉 指定${transport === 'train' ? '火車' : (transport === 'hsr' ? '高鐵' : '機場')}站`;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (currentMap[city]) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>let list = (district === '全區' ? Object.values(currentMap[city]).flat() : (currentMap[city][district] || []));</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>list = [...new Set(list)].sort();</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>mrtSel.innerHTML = '&lt;option value=""&gt;--- 請選擇 ---&lt;/option&gt;' + list.map(s =&gt; `&lt;option value="${s}"&gt;${s}${s.includes('機場')?'':'站'}&lt;/option&gt;`).join('');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>} else { mrtSel.innerHTML = '&lt;option value=""&gt;該區暫無站點&lt;/option&gt;'; }</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* --- 核心邏輯 (使用 localStorage 與 Vercel API) --- */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>window.onload = function() { updateUsageDisplay(); };</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function updateUsageDisplay() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const today = new Date().toLocaleDateString();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const lastDate = localStorage.getItem('LAST_USE_DATE');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>let usageCount = parseInt(localStorage.getItem('USAGE_COUNT') || '0');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (lastDate !== today) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>usageCount = 0;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>localStorage.setItem('LAST_USE_DATE', today);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>localStorage.setItem('USAGE_COUNT', '0');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const remaining = Math.max(0, DAILY_LIMIT - usageCount);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('usage-text').innerText = `今日剩餘次數：${remaining} 次`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const btn = document.getElementById('search-btn');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (remaining &lt;= 0) { btn.disabled = true; btn.innerText = "額度已滿"; }</p>
+<p class="p1"><span class="Apple-converted-space">            </span>return remaining;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>async function handleSearchClick() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const remaining = updateUsageDisplay();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (remaining &lt;= 0) return;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const cityKey = document.getElementById('city').value;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const cityName = document.getElementById('city').options[document.getElementById('city').selectedIndex].text;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const transport = document.getElementById('transport').value;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const btn = document.getElementById('search-btn');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const loader = document.getElementById('loader');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// 交通驗證 (保持 100% 邏輯)</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const hasMRT = ['Taipei', 'NewTaipei', 'Taoyuan', 'Taichung', 'Kaohsiung'];</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (transport === 'mrt' &amp;&amp; !hasMRT.includes(cityKey)) { alert(`⚠️ 抱歉，${cityName} 目前沒有捷運系統。`); return; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>btn.disabled = true; btn.innerText = "搜尋中..."; loader.style.display = 'flex';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const data = {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>city: cityName, district: document.getElementById('district').value,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>food: document.getElementById('food').options[document.getElementById('food').selectedIndex].text,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>purpose: document.getElementById('purpose').options[document.getElementById('purpose').selectedIndex].text,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>budget: document.getElementById('budget').options[document.getElementById('budget').selectedIndex].text,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>people: document.getElementById('people').value,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>userTime: new Date().toLocaleString(),</p>
+<p class="p1"><span class="Apple-converted-space">                </span>mrtStation: document.getElementById('mrt-station').value,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>filters: (document.getElementById('btn-hidden').classList.contains('selected') ? "隱藏版 " : "") +<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                         </span>(document.getElementById('btn-open').classList.contains('selected') ? "營業中 " : "") +<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                         </span>(document.getElementById('transport').options[document.getElementById('transport').selectedIndex].text)</p>
+<p class="p1"><span class="Apple-converted-space">            </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>try {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const response = await fetch('/api/recommend', {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>method: 'POST',</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>body: JSON.stringify(data)</p>
+<p class="p1"><span class="Apple-converted-space">                </span>});</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const res = await response.json();</p>
+<p class="p1"><span class="Apple-converted-space">                </span>loader.style.display = 'none'; btn.disabled = false; btn.innerText = "開始探索美食";</p>
+<p class="p2"><span class="Apple-converted-space">                </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (res.error) { alert(res.error); return; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>// 更新使用量</p>
+<p class="p1"><span class="Apple-converted-space">                </span>let usageCount = parseInt(localStorage.getItem('USAGE_COUNT') || '0');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>localStorage.setItem('USAGE_COUNT', (usageCount + 1).toString());</p>
+<p class="p1"><span class="Apple-converted-space">                </span>updateUsageDisplay();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>renderCards(res);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} catch (e) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>alert("伺服器繁忙中，請稍後再試。");</p>
+<p class="p1"><span class="Apple-converted-space">                </span>loader.style.display = 'none'; btn.disabled = false;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* --- 渲染卡片與滑動邏輯 (100% 完整保留) --- */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let currentLikedList = [], swipedCount = 0, cardsRemaining = 0;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function renderCards(restaurants) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('main-ui').classList.add('blur-mode');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const stackContainer = document.getElementById('stack'); stackContainer.innerHTML = '';</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('swiper-overlay').style.display = 'flex';</p>
+<p class="p1"><span class="Apple-converted-space">            </span>currentLikedList = []; swipedCount = 0; cardsRemaining = restaurants.length;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const info = document.getElementById('round-info');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>info.innerText = restaurants.length === 1 ? "最終決選：右決定心意" : "左右滑動篩選";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>restaurants.forEach((res) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const wrapper = document.createElement('div'); wrapper.className = 'swipe-card-wrapper';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const card = document.createElement('div'); card.className = 'swipe-card';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>card.innerHTML = `&lt;div class="stamp stamp-like"&gt;LIKE&lt;/div&gt;&lt;div class="stamp stamp-nope"&gt;PASS&lt;/div&gt;&lt;h3&gt;${res.name}&lt;/h3&gt;&lt;div class="card-badges"&gt;&lt;span class="card-badge badge-rating"&gt;⭐ ${res.rating}&lt;/span&gt;&lt;span class="card-badge badge-price"&gt;💰 ${res.price}&lt;/span&gt;&lt;/div&gt;&lt;div class="info-row"&gt;&lt;span class="info-label"&gt;🕒 營業&lt;/span&gt;&lt;span&gt;${res.hours}&lt;/span&gt;&lt;/div&gt;&lt;div class="info-row"&gt;&lt;span class="info-label"&gt;🔥 招牌&lt;/span&gt;&lt;span&gt;${res.signature}&lt;/span&gt;&lt;/div&gt;&lt;div class="card-summary"&gt;"${res.review_summary}"&lt;/div&gt;&lt;div class="info-row"&gt;&lt;span class="info-label"&gt;💡 推薦&lt;/span&gt;&lt;span&gt;${res.reason}&lt;/span&gt;&lt;/div&gt;&lt;div class="info-row" style="opacity:0.6; font-size:0.75rem;"&gt;📍 ${res.address}&lt;/div&gt;&lt;a class="card-map-btn" href="https://www.google.com/maps/search/?api=1&amp;query=${encodeURIComponent(res.name + ' ' + res.address)}" target="_blank"&gt;🗺️ 開啟 Google 地圖&lt;/a&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>wrapper.appendChild(card); stackContainer.appendChild(wrapper); initSwipe(card, wrapper, res, restaurants.length === 1);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function initSwipe(el, wrapper, resData, isLastOne) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>let startX, moveX = 0; let isDone = false;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const likeStamp = el.querySelector('.stamp-like'); const nopeStamp = el.querySelector('.stamp-nope');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>el.addEventListener('touchstart', (e) =&gt; { if(isDone) return; startX = e.touches[0].clientX; el.style.transition = 'none'; });</p>
+<p class="p1"><span class="Apple-converted-space">            </span>el.addEventListener('touchmove', (e) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if(isDone) return; moveX = e.touches[0].clientX - startX;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>el.style.transform = `translateX(${moveX}px) rotate(${moveX/20}deg)`;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>likeStamp.style.opacity = moveX &gt; 20 ? Math.min(moveX/100, 1) : 0;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>nopeStamp.style.opacity = moveX &lt; -20 ? Math.min(Math.abs(moveX)/100, 1) : 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p1"><span class="Apple-converted-space">            </span>el.addEventListener('touchend', () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if(isDone) return; el.style.transition = 'transform 0.4s ease, opacity 0.4s ease';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if(Math.abs(moveX) &gt; 100) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const dir = moveX &gt; 0 ? 1 : -1;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>if(isLastOne) { if(dir === 1) { el.style.transform = 'translateX(0)'; likeStamp.style.opacity = 1; isDone = true; } else resetUI(); }</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>else { if(dir === 1) currentLikedList.push(resData); el.style.transform = `translateX(${dir*150}%)`; setTimeout(() =&gt; { wrapper.remove(); swipedCount++; if(swipedCount === cardsRemaining) { if(currentLikedList.length &gt; 0) renderCards(currentLikedList); else resetUI(); } }, 300); }</p>
+<p class="p1"><span class="Apple-converted-space">                </span>} else { el.style.transform = 'translateX(0)'; likeStamp.style.opacity = 0; nopeStamp.style.opacity = 0; }</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function resetUI() { document.getElementById('swiper-overlay').style.display = 'none'; document.getElementById('main-ui').classList.remove('blur-mode'); }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
