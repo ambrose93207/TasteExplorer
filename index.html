@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>EatExplorer - 巷弄探索</title>
     <style>
-        /* --- 核心樣式：100% 還原原始設定 --- */
+        /* --- 核心樣式：100% 原始還原 --- */
         :root {
             --primary-orange: #FF6600;
             --glass-bg: rgba(25, 25, 25, 0.85);
@@ -121,7 +121,6 @@
 
     <script>
         const DAILY_LIMIT = 15;
-
         /* --- 100% 完整保留背景輪播 --- */
         const images = ['https://images.unsplash.com/photo-1555939594-58d7cb561ad1', 'https://images.unsplash.com/photo-1594046243098-0fceea9d451e', 'https://images.unsplash.com/photo-1563245372-f21724e3856d', 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd', 'https://images.unsplash.com/photo-1504674900247-0877df9cc836', 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38'];
         const bg = document.getElementById('bg-container');
@@ -132,11 +131,11 @@
         function updateDistricts() { const city = document.getElementById('city').value; const distSelect = document.getElementById('district'); distSelect.innerHTML = cityData[city].map(d => `<option value="${d}">${d}</option>`).join(''); }
         updateDistricts();
 
-        /* --- 100% 完整交通站點資料庫 --- */
+        /* --- 交通站點資料庫：分離台北與新北捷運 --- */
         const mrtLinesTaipei = {
             '板南線 (BL)': ['龍山寺', '西門', '台北車站', '善導寺', '忠孝新生', '忠孝復興', '忠孝敦化', '國父紀念館', '市政府', '永春', '後山埤', '昆陽', '南港', '南港展覽館'],
             '淡水信義線 (R)': ['象山', '台北101/世貿', '信義安和', '大安', '大安森林公園', '東門', '中正紀念堂', '台大醫院', '台北車站', '中山', '雙連', '民權西路', '圓山', '劍潭', '士林', '芝山', '明德', '石牌', '唭哩岸', '奇岩', '北投', '新北投', '復興崗', '忠義', '關渡'],
-            '松山新店線 (G)': ['景美', '萬隆', '公館', '台電大樓', '古亭', '中正紀念堂', '小南門', '西門', '北門', '中山', '松江南京', '南京復興', '台北小巨蛋', '南京三三民', '松山'],
+            '松山新店線 (G)': ['景美', '萬隆', '公館', '台電大樓', '古亭', '中正紀念堂', '小南門', '西門', '北門', '中山', '松江南京', '南京復興', '台北小巨蛋', '南京三民', '松山'],
             '中和新蘆線 (O)': ['古亭', '東門', '忠孝新生', '松江南京', '行天宮', '中山國小', '民權西路', '大橋頭'],
             '文湖線 (BR)': ['動物園', '木柵', '萬芳社區', '萬芳醫院', '辛亥', '麟光', '六張犁', '科技大樓', '大安', '忠孝復興', '南京復興', '中山國中', '松山機場', '大直', '劍南路', '西湖', '港墘', '文德', '內湖', '大湖公園', '葫洲', '東湖', '南港軟體園區', '南港展覽館']
         };
@@ -189,17 +188,13 @@
             }
         }
 
-        /* --- 核心邏輯（由 GAS 轉向 Vercel） --- */
+        /* --- Vercel 下的次數限制與搜尋邏輯 (100% 完整保留原始校驗) --- */
         window.onload = function() { updateUsageDisplay(); };
         function updateUsageDisplay() {
             const today = new Date().toLocaleDateString();
             const lastDate = localStorage.getItem('LAST_USE_DATE');
             let usageCount = parseInt(localStorage.getItem('USAGE_COUNT') || '0');
-            if (lastDate !== today) {
-                usageCount = 0;
-                localStorage.setItem('LAST_USE_DATE', today);
-                localStorage.setItem('USAGE_COUNT', '0');
-            }
+            if (lastDate !== today) { usageCount = 0; localStorage.setItem('LAST_USE_DATE', today); localStorage.setItem('USAGE_COUNT', '0'); }
             const remaining = Math.max(0, DAILY_LIMIT - usageCount);
             document.getElementById('usage-text').innerText = `今日剩餘次數：${remaining} 次`;
             const btn = document.getElementById('search-btn');
@@ -217,6 +212,7 @@
             const btn = document.getElementById('search-btn');
             const loader = document.getElementById('loader');
 
+            /* --- 100% 原始交通限制邏輯 --- */
             const hasMRT = ['Taipei', 'NewTaipei', 'Taoyuan', 'Taichung', 'Kaohsiung'];
             const noTrain = ['Penghu', 'Kinmen', 'Lienchiang'];
             const hasHSR = ['Taipei', 'NewTaipei', 'Taoyuan', 'HsinchuCounty', 'Miaoli', 'Taichung', 'Changhua', 'Yunlin', 'ChiayiCounty', 'Tainan', 'Kaohsiung'];
@@ -227,6 +223,7 @@
             if (transport === 'hsr' && !hasHSR.includes(cityKey)) { alert(`⚠️ 抱歉，${cityName} 目前沒有高鐵站點。`); return; }
             if (transport === 'airport' && !hasAirport.includes(cityKey)) { alert(`⚠️ 抱歉，${cityName} 目前沒有提供民航客運的機場。`); return; }
 
+            // 啟動轉圈圈
             btn.disabled = true; btn.innerText = "搜尋中..."; loader.style.display = 'flex';
 
             const now = new Date();
@@ -252,21 +249,20 @@
                 });
                 const res = await response.json();
                 loader.style.display = 'none'; btn.disabled = false; btn.innerText = "開始探索美食";
-                if(res && res.error) { alert(res.error); return; }
                 
-                // 更新次數
-                let count = parseInt(localStorage.getItem('USAGE_COUNT') || '0');
-                localStorage.setItem('USAGE_COUNT', (count + 1).toString());
+                if (res.error) { alert("AI 正在忙碌或 API 金鑰失效。"); return; }
+                
+                // 成功則扣除次數
+                localStorage.setItem('USAGE_COUNT', (parseInt(localStorage.getItem('USAGE_COUNT') || '0') + 1).toString());
                 updateUsageDisplay();
-                
                 renderCards(res);
             } catch (e) {
-                alert("伺服器連線失敗");
+                alert("伺服器連線失敗。");
                 loader.style.display = 'none'; btn.disabled = false;
             }
         }
 
-        /* --- 100% 完整保留滑動與卡片渲染邏輯 --- */
+        /* --- 100% 原始卡片渲染與滑動邏輯 --- */
         let currentLikedList = [], swipedCount = 0, cardsRemaining = 0;
         function renderCards(restaurants) {
             document.getElementById('main-ui').classList.add('blur-mode');
