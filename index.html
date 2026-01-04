@@ -5,19 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>EatExplorer - 巷弄探索</title>
     <style>
-        /* --- 核心樣式：100% 原始還原 --- */
-        :root {
-            --primary-orange: #FF6600;
-            --glass-bg: rgba(25, 25, 25, 0.85);
-            --glass-border: rgba(255, 255, 255, 0.15);
-            --input-bg: rgba(255, 255, 255, 0.1);
-            --text-color: #ffffff;
-            --label-color: #cccccc;
-            --accent-yellow: #FFCC00;
-        }
+        :root { --primary-orange: #FF6600; --glass-bg: rgba(25, 25, 25, 0.85); --glass-border: rgba(255, 255, 255, 0.15); --input-bg: rgba(255, 255, 255, 0.1); --text-color: #ffffff; --label-color: #cccccc; --accent-yellow: #FFCC00; }
         html, body { overscroll-behavior-y: none; height: 100%; overflow: hidden; position: fixed; width: 100%; margin: 0; padding: 0; background-color: #000; }
-        html { font-size: 14px; } 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif; }
+        html { font-size: 14px; } * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif; }
         body { color: #fff; display: flex; align-items: center; justify-content: center; }
         #bg-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
         .bg-slide { position: absolute; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; transition: opacity 1s; }
@@ -67,46 +57,16 @@
     </style>
 </head>
 <body touch-action="none">
-
     <div id="bg-container"></div>
-
     <div class="container" id="main-ui">
         <div class="header"><div class="logo">EatExplorer</div><div class="tagline">探索全台隱藏美味，享受極致饗宴</div></div>
-
         <div class="glass-card">
             <div class="form-grid">
-                <div class="form-group"><label>📍 縣市</label><div class="input-box">
-                    <select id="city" onchange="updateDistricts(); checkTransAvailability();">
-                        <optgroup label="北部地區"><option value="Taipei" selected>台北市</option><option value="NewTaipei">新北市</option><option value="Keelung">基隆市</option><option value="Taoyuan">桃園市</option><option value="HsinchuCity">新竹市</option><option value="HsinchuCounty">新竹縣</option><option value="Yilan">宜蘭縣</option></optgroup>
-                        <optgroup label="中部地區"><option value="Miaoli">苗栗縣</option><option value="Taichung">台中市</option><option value="Changhua">彰化縣</option><option value="Nantou">南投縣</option><option value="Yunlin">雲林縣</option></optgroup>
-                        <optgroup label="南部地區"><option value="ChiayiCity">嘉義市</option><option value="ChiayiCounty">嘉義縣</option><option value="Tainan">台南市</option><option value="Kaohsiung">高雄市</option><option value="Pingtung">屏東縣</option></optgroup>
-                        <optgroup label="東部與離島"><option value="Hualien">花蓮縣</option><option value="Taitung">台東縣</option><option value="Penghu">澎湖縣</option><option value="Kinmen">金門縣</option><option value="Lienchiang">連江縣</option></optgroup>
-                    </select>
-                </div></div>
+                <div class="form-group"><label>📍 縣市</label><div class="input-box"><select id="city" onchange="updateDistricts(); checkTransAvailability();"><optgroup label="北部地區"><option value="Taipei" selected>台北市</option><option value="NewTaipei">新北市</option><option value="Keelung">基隆市</option><option value="Taoyuan">桃園市</option><option value="HsinchuCity">新竹市</option><option value="HsinchuCounty">新竹縣</option><option value="Yilan">宜蘭縣</option></optgroup><optgroup label="中部地區"><option value="Miaoli">苗栗縣</option><option value="Taichung">台中市</option><option value="Changhua">彰化縣</option><option value="Nantou">南投縣</option><option value="Yunlin">雲林縣</option></optgroup><optgroup label="南部地區"><option value="ChiayiCity">嘉義市</option><option value="ChiayiCounty">嘉義縣</option><option value="Tainan">台南市</option><option value="Kaohsiung">高雄市</option><option value="Pingtung">屏東縣</option></optgroup><optgroup label="東部與離島"><option value="Hualien">花蓮縣</option><option value="Taitung">台東縣</option><option value="Penghu">澎湖縣</option><option value="Kinmen">金門縣</option><option value="Lienchiang">連江縣</option></optgroup></select></div></div>
                 <div class="form-group"><label>🏙️ 行政區</label><div class="input-box"><select id="district" onchange="checkTransAvailability();"><option>全區</option></select></div></div>
-
-                <div class="form-group full-width"><label>🚆 交通偏好</label><div class="input-box">
-                    <select id="transport" onchange="checkTransAvailability()">
-                        <option value="none" selected>🤷‍♂️ 不拘</option>
-                        <option value="mrt">🚇 鄰近捷運站</option>
-                        <option value="hsr">🚄 鄰近高鐵站</option>
-                        <option value="train">🚂 鄰近火車站</option>
-                        <option value="airport">✈️ 鄰近機場</option>
-                    </select>
-                </div></div>
-
+                <div class="form-group full-width"><label>🚆 交通偏好</label><div class="input-box"><select id="transport" onchange="checkTransAvailability()"><option value="none" selected>🤷‍♂️ 不拘</option><option value="mrt">🚇 鄰近捷運站</option><option value="hsr">🚄 鄰近高鐵站</option><option value="train">🚂 鄰近火車站</option><option value="airport">✈️ 鄰近機場</option></select></div></div>
                 <div class="form-group full-width" id="mrt-section" style="display:none;"><label id="trans-label">🚉 指定站點</label><div class="input-box"><select id="mrt-station"></select></div></div>
-
-                <div class="form-group full-width"><label>🤤 想吃什麼？</label><div class="input-box"><select id="food">
-                    <option value="all">全部 (什麼都想吃)</option>
-                    <optgroup label="🔥 熱門精選"><option value="hotpot">火鍋 / 麻辣鍋 / 涮涮鍋</option><option value="bbq">燒肉 / 日式烤肉 / 韓式烤肉</option><option value="steak">牛排 / 鐵板燒</option><option value="buffet">吃到飽 (Buffet)</option></optgroup>
-                    <optgroup label="🍜 台式與中式"><option value="taiwanese_snack">台灣小吃 / 路邊攤</option><option value="beef_noodle">牛肉麵</option><option value="rechao">海鮮熱炒 / 合菜</option><option value="hot_soup">滷味 / 鹽酥雞 / 宵夜</option></optgroup>
-                    <optgroup label="🍣 日式料理"><option value="ramen">日式拉麵 / 烏龍麵</option><option value="sushi">壽司 / 生魚片 / 丼飯</option><option value="izakaya">居酒屋 / 串燒</option><option value="curry">日式咖哩 / 定食</option></optgroup>
-                    <optgroup label="🌍 異國風味"><option value="korean">韓式料理 / 炸雞</option><option value="thai_viet">泰式 / 越式料理</option><option value="american">美式漢堡 / 炸物</option><option value="italian">義式料理 / 披薩 / 義大利麵</option></optgroup>
-                    <optgroup label="☕ 放鬆時刻"><option value="brunch">早午餐 (Brunch)</option><option value="cafe">咖啡廳 / 下午茶 / 甜點</option><option value="bistro">餐酒館 / Bar</option></optgroup>
-                    <optgroup label="🥬 其他"><option value="vegetarian">素食 / 蔬食</option><option value="healthy">健康餐盒 / 輕食</option></optgroup>
-                </select></div></div>
-
+                <div class="form-group full-width"><label>🤤 想吃什麼？</label><div class="input-box"><select id="food"><option value="all">全部 (什麼都想吃)</option><optgroup label="🔥 熱門精選"><option value="hotpot">火鍋 / 麻辣鍋 / 涮涮鍋</option><option value="bbq">燒肉 / 日式烤肉 / 韓式烤肉</option><option value="steak">牛排 / 鐵板燒</option><option value="buffet">吃到飽 (Buffet)</option></optgroup><optgroup label="🍜 台式與中式"><option value="taiwanese_snack">台灣小吃 / 路邊攤</option><option value="beef_noodle">牛肉麵</option><option value="rechao">海鮮熱炒 / 合菜</option><option value="hot_soup">滷味 / 鹽酥雞 / 宵夜</option></optgroup><optgroup label="🍣 日式料理"><option value="ramen">日式拉麵 / 烏龍麵</option><option value="sushi">壽司 / 生魚片 / 丼飯</option><option value="izakaya">居酒屋 / 串燒</option><option value="curry">日式咖哩 / 定食</option></optgroup><optgroup label="🌍 異國風味"><option value="korean">韓式料理 / 炸雞</option><option value="thai_viet">泰式 / 越式料理</option><option value="american">美式漢堡 / 炸物</option><option value="italian">義式料理 / 披薩 / 義大利麵</option></optgroup><optgroup label="☕ 放鬆時刻"><option value="brunch">早午餐 (Brunch)</option><option value="cafe">咖啡廳 / 下午茶 / 甜點</option><option value="bistro">餐酒館 / Bar</option></optgroup><optgroup label="🥬 其他"><option value="vegetarian">素食 / 蔬食</option><option value="healthy">健康餐盒 / 輕食</option></optgroup></select></div></div>
                 <div class="form-group full-width"><label>👥 人數</label><div class="input-box"><select id="people"><option selected>1~2 人</option><option>2~4 人</option><option>4~6 人</option><option>6 人以上</option></select></div></div>
                 <div class="form-group full-width"><label>🎯 用餐目的</label><div class="input-box"><select id="purpose"><option>🤷‍♂️ 不拘 (隨意吃吃)</option><option>👯 朋友聚餐 (熱鬧)</option><option>💑 情侶約會 (氣氛)</option><option>👨‍👩‍👧‍👦 家庭聚會 (長輩/小孩)</option><option>🧘 一人獨享 (安靜)</option><option>💼 商務宴請 (正式)</option><option>🌙 宵夜場 (深夜)</option><option>📸 IG打卡/網美店</option><option>⚡ 快速解決 (趕時間)</option><option>🎉 慶生/紀念日</option></select></div></div>
                 <div class="form-group full-width"><label>💰 預算範圍</label><div class="input-box"><select id="budget"><option value="low">💵 平價 (&lt;$300)</option><option value="mid">💵💵 中價位 ($300～$800)</option><option value="high">💵💵💵 高級 (&gt;$800)</option><option value="luxury">💎 頂級奢華 (&gt;$2000)</option></select></div></div>
@@ -115,13 +75,11 @@
         </div>
         <div class="footer-action"><button id="search-btn" class="cta-button" onclick="handleSearchClick()">開始探索美食</button><div id="usage-text" class="usage-hint">今日剩餘次數：-- 次</div></div>
     </div>
-
     <div id="loader"><div class="spinner"></div><p style="color:white; font-weight:bold;">正在穿梭巷弄中...</p></div>
     <div id="swiper-overlay"><div id="round-info"></div><div class="card-stack" id="stack"></div><button class="close-swiper" onclick="resetUI()">← 返回調整</button></div>
 
     <script>
         const DAILY_LIMIT = 15;
-        /* --- 100% 完整保留背景輪播 --- */
         const images = ['https://images.unsplash.com/photo-1555939594-58d7cb561ad1', 'https://images.unsplash.com/photo-1594046243098-0fceea9d451e', 'https://images.unsplash.com/photo-1563245372-f21724e3856d', 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd', 'https://images.unsplash.com/photo-1504674900247-0877df9cc836', 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38'];
         const bg = document.getElementById('bg-container');
         images.forEach((url, i) => { const div = document.createElement('div'); div.className = 'bg-slide' + (i===0?' active':''); div.style.backgroundImage = `url('${url}?auto=format&fit=crop&w=1200')`; bg.appendChild(div); });
@@ -131,29 +89,12 @@
         function updateDistricts() { const city = document.getElementById('city').value; const distSelect = document.getElementById('district'); distSelect.innerHTML = cityData[city].map(d => `<option value="${d}">${d}</option>`).join(''); }
         updateDistricts();
 
-        /* --- 交通站點資料庫：分離台北與新北捷運 --- */
-        const mrtLinesTaipei = {
-            '板南線 (BL)': ['龍山寺', '西門', '台北車站', '善導寺', '忠孝新生', '忠孝復興', '忠孝敦化', '國父紀念館', '市政府', '永春', '後山埤', '昆陽', '南港', '南港展覽館'],
-            '淡水信義線 (R)': ['象山', '台北101/世貿', '信義安和', '大安', '大安森林公園', '東門', '中正紀念堂', '台大醫院', '台北車站', '中山', '雙連', '民權西路', '圓山', '劍潭', '士林', '芝山', '明德', '石牌', '唭哩岸', '奇岩', '北投', '新北投', '復興崗', '忠義', '關渡'],
-            '松山新店線 (G)': ['景美', '萬隆', '公館', '台電大樓', '古亭', '中正紀念堂', '小南門', '西門', '北門', '中山', '松江南京', '南京復興', '台北小巨蛋', '南京三民', '松山'],
-            '中和新蘆線 (O)': ['古亭', '東門', '忠孝新生', '松江南京', '行天宮', '中山國小', '民權西路', '大橋頭'],
-            '文湖線 (BR)': ['動物園', '木柵', '萬芳社區', '萬芳醫院', '辛亥', '麟光', '六張犁', '科技大樓', '大安', '忠孝復興', '南京復興', '中山國中', '松山機場', '大直', '劍南路', '西湖', '港墘', '文德', '內湖', '大湖公園', '葫洲', '東湖', '南港軟體園區', '南港展覽館']
-        };
-        const mrtLinesNewTaipei = {
-            '板南線 (BL)': ['頂埔', '永寧', '土城', '海山', '亞東醫院', '府中', '板橋', '新埔', '江子翠'],
-            '淡水信義線 (R)': ['竹圍', '紅樹林', '淡水'],
-            '松山新店線 (G)': ['新店', '新店區公所', '七張', '大坪林'],
-            '中和新蘆線 (O)': ['南勢角', '景安', '永安市場', '頂溪', '三重國小', '三和國中', '徐匯中學', '三民高中', '蘆洲', '台北橋', '菜寮', '三重', '先嗇宮', '頭前庄', '新莊', '輔大', '丹鳳', '迴龍'],
-            '環狀線 (Y)': ['大坪林', '十四張', '秀朗橋', '景平', '景安', '中和', '橋和', '中原', '板新', '板橋', '新埔民生', '頭前庄', '幸福', '新北產業園區']
-        };
+        const mrtLinesTaipei = { '板南線 (BL)': ['龍山寺', '西門', '台北車站', '善導寺', '忠孝新生', '忠孝復興', '忠孝敦化', '國父紀念館', '市政府', '永春', '後山埤', '昆陽', '南港', '南港展覽館'], '淡水信義線 (R)': ['象山', '台北101/世貿', '信義安和', '大安', '大安森林公園', '東門', '中正紀念堂', '台大醫院', '台北車站', '中山', '雙連', '民權西路', '圓山', '劍潭', '士林', '芝山', '明德', '石牌', '唭哩岸', '奇岩', '北投', '新北投', '復興崗', '忠義', '關渡'], '松山新店線 (G)': ['景美', '萬隆', '公館', '台電大樓', '古亭', '中正紀念堂', '小南門', '西門', '北門', '中山', '松江南京', '南京復興', '台北小巨蛋', '南京三民', '松山'], '中和新蘆線 (O)': ['古亭', '東門', '忠孝新生', '松江南京', '行天宮', '中山國小', '民權西路', '大橋頭'], '文湖線 (BR)': ['動物園', '木柵', '萬芳社區', '萬芳醫院', '辛亥', '麟光', '六張犁', '科技大樓', '大安', '忠孝復興', '南京復興', '中山國中', '松山機場', '大直', '劍南路', '西湖', '港墘', '文德', '內湖', '大湖公園', '葫洲', '東湖', '南港軟體園區', '南港展覽館'] };
+        const mrtLinesNewTaipei = { '板南線 (BL)': ['頂埔', '永寧', '土城', '海山', '亞東醫院', '府中', '板橋', '新埔', '江子翠'], '淡水信義線 (R)': ['竹圍', '紅樹林', '淡水'], '松山新店線 (G)': ['新店', '新店區公所', '七張', '大坪林'], '中和新蘆線 (O)': ['南勢角', '景安', '永安市場', '頂溪', '三重國小', '三和國中', '徐匯中學', '三民高中', '蘆洲', '台北橋', '菜寮', '三重', '先嗇宮', '頭前庄', '新莊', '輔大', '丹鳳', '迴龍'], '環狀線 (Y)': ['大坪林', '十四張', '秀朗橋', '景平', '景安', '中和', '橋和', '中原', '板新', '板橋', '新埔民生', '頭前庄', '幸福', '新北產業園區'] };
         const mrtLinesTaoyuan = { '機場捷運 (A)': ['台北車站', '三重', '新北產業園區', '新莊副都心', '泰山', '泰山貴和', '體育大學', '長庚醫院', '林口', '山鼻', '坑口', '機場第一航廈', '機場第二航廈', '機場旅館', '大園', '橫山', '領航', '高鐵桃園站', '桃園體育園區', '興南', '環北', '老街溪'] };
         const mrtLinesTaichung = { '綠線': ['北屯總站', '舊社', '松竹', '四維國小', '文心崇德', '文心中清', '文華高中', '文心櫻花', '市政府', '水安宮', '文心森林公園', '南屯', '豐樂公園', '大慶', '九張犁', '九德', '烏日', '高鐵台中站'] };
-        const mrtLinesKaohsiung = {
-            '紅線 (R)': ['小港', '高雄國際機場', '草衙', '前鎮高中', '凱旋', '獅甲', '三多商圈', '中央公園', '美麗島', '高雄車站', '後驛', '凹子底', '巨蛋', '生態園區', '左營', '世運', '油廠國小', '楠梓科技園區', '後勁', '都會公園', '青埔', '橋頭糖廠', '橋頭火車站', '岡山高醫', '岡山車站'],
-            '橘線 (O)': ['哈瑪星', '鹽埕埔', '前金', '美麗島', '信義國小', '文化中心', '五塊厝', '苓雅運動園區', '衛武營', '鳳山西站', '鳳山', '大東', '鳳山國中', '大寮'],
-            '輕軌 (C)': ['籬仔內', '凱旋瑞田', '前鎮之星', '凱旋中華', '夢時代', '經貿園區', '軟體園區', '高雄展覽館', '旅運中心', '光榮碼頭', '真愛碼頭', '駁二大義', '駁二蓬萊', '哈瑪星', '壽山公園', '文武聖殿', '鼓山區公所', '鼓山', '馬卡道', '台鐵美術館', '美術館', '聯合醫院', '龍華國小', '愛河之心', '新上國小', '灣仔內', '高雄高工', '樹德家商', '科工館', '聖功醫院', '凱旋公園']
-        };
-        const mrtMap = { 'Taipei': { '中正區': ['台北車站', '善導寺', '忠孝新生', '中正紀念堂', '古亭', '西門', '台大醫院'], '萬華區': ['西門', '龍山寺'], '大安區': ['忠孝復興', '忠孝敦化', '國父紀念館', '信義安和', '大安', '科技大樓', '六張犁', '公館', '東門'], '信義區': ['市政府', '永春', '後山埤', '象山', '台北101/世貿'], '中山區': ['中山', '雙連', '民權西路', '圓山', '松江南京', '行天宮', '中山國小', '大直', '劍南路'], '松山區': ['南京復興', '台北小巨蛋', '南京三三民', '松山'], '大同區': ['大橋頭', '中山', '圓山', '民權西路'], '士林區': ['劍潭', '士林', '芝山', '明德'], '北投區': ['石牌', '唭哩岸', '奇岩', '北投', '新北投', '復興崗', '關渡'], '內湖區': ['西湖', '港墘', '文德', '內湖', '大湖公園', '葫洲', '東湖'], '南港區': ['南港', '南港展覽館', '南港軟體園區', '昆陽'], '文山區': ['動物園', '木柵', '萬芳醫院', '萬芳社區', '景美', '萬隆'] }, 'NewTaipei': { '板橋區': ['板橋', '府中', '新埔', '江子翠', '亞東醫院'], '三重區': ['三重', '菜寮', '台北橋', '三重國小', '三和國中', '徐匯中學'], '中和區': ['景安', '南勢角', '永安市場', '中和'], '永和區': ['頂溪', '永安市場'], '新莊區': ['新莊', '輔大', '丹鳳', '迴龍', '頭前庄'], '新店區': ['新店', '七張', '大坪林', '小碧潭', '新店區公所'], '淡水區': ['淡水', '紅樹林', '竹圍'], '林口區': ['林口'] } };
+        const mrtLinesKaohsiung = { '紅線 (R)': ['小港', '高雄國際機場', '草衙', '前鎮高中', '凱旋', '獅甲', '三多商圈', '中央公園', '美麗島', '高雄車站', '後驛', '凹子底', '巨蛋', '生態園區', '左營', '世運', '油廠國小', '楠梓科技園區', '後勁', '都會公園', '青埔', '橋頭糖廠', '橋頭火車站', '岡山高醫', '岡山車站'], '橘線 (O)': ['哈瑪星', '鹽埕埔', '前金', '美麗島', '信義國小', '文化中心', '五塊厝', '苓雅運動園區', '衛武營', '鳳山西站', '鳳山', '大東', '鳳山國中', '大寮'], '輕軌 (C)': ['籬仔內', '凱旋瑞田', '前鎮之星', '凱旋中華', '夢時代', '夢夢時代', '經貿園區', '軟體園區', '高雄展覽館', '旅運中心', '光榮碼頭', '真愛碼頭', '駁二大義', '駁二蓬萊', '哈瑪星', '壽山公園', '文武聖殿', '鼓山區公所', '鼓山', '馬卡道', '台鐵美術館', '美術館', '聯合醫院', '龍華國小', '愛河之心', '新上國小', '灣仔內', '高雄高工', '樹德家商', '科工館', '聖功醫院', '凱旋公園'] };
+        const mrtMap = { 'Taipei': { '中正區': ['台北車站', '善導寺', '忠孝新生', '中正紀念堂', '古亭', '西門', '台大醫院'], '萬華區': ['西門', '龍山寺'], '大安區': ['忠孝復興', '忠孝敦化', '國父紀念館', '信義安和', '大安', '科技大樓', '六張犁', '公館', '東門'], '信義區': ['市政府', '永春', '後山埤', '象山', '台北101/世貿'], '中山區': ['中山', '雙連', '民權西路', '圓山', '松江南京', '行天宮', '中山國小', '大直', '劍南路'], '松山區': ['南京復興', '台北小巨蛋', '南京三三民', '松山'], '大同區': ['大橋頭', '中山', '圓山', '民權西路'], '士林區': ['劍潭', '士林', '芝山', '明德'], '北投區': ['石牌', '唭哩岸', '奇岩', '北投', '新北投', '復興崗', '關渡'], '內湖區': ['西湖', '港墘', '文德', '內湖', '大湖公園', '葫洲', '東湖'], '南港區': ['南港', '南港展覽館', '南港軟體園區', '昆陽'], '文山區': ['動物園', '木柵', '萬芳醫院', '萬芳社區', '景美', '萬隆'] }, 'NewTaipei': { '板橋區': ['板橋', '府中', '新埔', '江子翠', '亞東醫院'], '三重區': ['三重', '菜寮', '台北橋', '三重國小', '三和國中', '徐匯中學'], '中和區': ['景安', '南勢角', '永安市場', '中和'], '永和區': ['頂溪', '永安市場'], '新莊區': ['新莊', '輔大', '丹鳳', '迴龍', '頭前庄'], '新店區': ['新店', '七張', '大坪林', '小碧潭', '新店區公所'], '淡水區': ['淡水', '紅樹林', '竹圍'], '林口區': ['機場捷運林口站'] } };
         const hsrMap = { 'Taipei': { '中正區': ['高鐵台北站'], '南港區': ['高鐵南港站'] }, 'NewTaipei': { '板橋區': ['高鐵板橋站'] }, 'Taoyuan': { '中壢區': ['高鐵桃園站'] }, 'HsinchuCounty': { '竹北市': ['高鐵新竹站'] }, 'Miaoli': { '後龍鎮': ['高鐵苗栗站'] }, 'Taichung': { '烏日區': ['高鐵台中站'] }, 'Changhua': { '田中鎮': ['高鐵彰化站'] }, 'Yunlin': { '虎尾鎮': ['高鐵雲林站'] }, 'ChiayiCounty': { '太保市': ['高鐵嘉義站'] }, 'Tainan': { '歸仁區': ['高鐵台南站'] }, 'Kaohsiung': { '左營區': ['高鐵左營站'] } };
         const trainMap = { 'Keelung': { '仁愛區': ['基隆'], '暖暖區': ['八堵'], '七堵區': ['七堵'] }, 'Taipei': { '中正區': ['台北'], '萬華區': ['萬華'], '松山區': ['松山'], '南港區': ['南港'] }, 'NewTaipei': { '板橋區': ['板橋'], '汐止區': ['汐止', '汐科'], '樹林區': ['樹林'], '鶯歌區': ['鶯歌'], '瑞芳區': ['瑞芳'] }, 'Taoyuan': { '桃園區': ['桃園'], '中壢區': ['中壢'], '楊梅區': ['楊梅'] }, 'Taichung': { '中區': ['台中'], '烏日區': ['新烏日'], '豐原區': ['豐原'] }, 'Tainan': { '東區': ['台南'], '永康區': ['永康'] }, 'Kaohsiung': { '三民區': ['高雄'], '左營區': ['新左營'], '鳳山區': ['鳳山'] }, 'Hualien': { '花蓮市': ['花蓮'] }, 'Taitung': { '台東市': ['台東'] } };
         const airportMap = { 'Taipei': { '松山區': ['台北松山機場'] }, 'Taoyuan': { '大園區': ['桃園國際機場'] }, 'Taichung': { '沙鹿區': ['台中國際機場'] }, 'Kaohsiung': { '小港區': ['高雄小港機場'] }, 'Penghu': { '湖西鄉': ['澎湖機場'] }, 'Kinmen': { '金湖鎮': ['金門機場'] }, 'Lienchiang': { '南竿鄉': ['馬祖南竿機場'] }, 'Taitung': { '台東市': ['台東機場'] } };
@@ -188,7 +129,6 @@
             }
         }
 
-        /* --- Vercel 下的次數限制與搜尋邏輯 (100% 完整保留原始校驗) --- */
         window.onload = function() { updateUsageDisplay(); };
         function updateUsageDisplay() {
             const today = new Date().toLocaleDateString();
@@ -205,14 +145,13 @@
         async function handleSearchClick() {
             const remaining = updateUsageDisplay();
             if (remaining <= 0) return;
-
             const cityKey = document.getElementById('city').value;
             const cityName = document.getElementById('city').options[document.getElementById('city').selectedIndex].text;
             const transport = document.getElementById('transport').value;
             const btn = document.getElementById('search-btn');
             const loader = document.getElementById('loader');
 
-            /* --- 100% 原始交通限制邏輯 --- */
+            /* --- 100% 原生交通系統驗證邏輯 --- */
             const hasMRT = ['Taipei', 'NewTaipei', 'Taoyuan', 'Taichung', 'Kaohsiung'];
             const noTrain = ['Penghu', 'Kinmen', 'Lienchiang'];
             const hasHSR = ['Taipei', 'NewTaipei', 'Taoyuan', 'HsinchuCounty', 'Miaoli', 'Taichung', 'Changhua', 'Yunlin', 'ChiayiCounty', 'Tainan', 'Kaohsiung'];
@@ -223,19 +162,16 @@
             if (transport === 'hsr' && !hasHSR.includes(cityKey)) { alert(`⚠️ 抱歉，${cityName} 目前沒有高鐵站點。`); return; }
             if (transport === 'airport' && !hasAirport.includes(cityKey)) { alert(`⚠️ 抱歉，${cityName} 目前沒有提供民航客運的機場。`); return; }
 
-            // 啟動轉圈圈
             btn.disabled = true; btn.innerText = "搜尋中..."; loader.style.display = 'flex';
-
             const now = new Date();
             const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-            const userTimeString = `${days[now.getDay()]} ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
-
             const data = {
                 city: cityName, district: document.getElementById('district').value,
                 food: document.getElementById('food').options[document.getElementById('food').selectedIndex].text,
                 purpose: document.getElementById('purpose').options[document.getElementById('purpose').selectedIndex].text,
                 budget: document.getElementById('budget').options[document.getElementById('budget').selectedIndex].text,
-                people: document.getElementById('people').value, userTime: userTimeString,
+                people: document.getElementById('people').value, 
+                userTime: `${days[now.getDay()]} ${now.getHours()}:${now.getMinutes()}`,
                 mrtStation: document.getElementById('mrt-station').value,
                 filters: (document.getElementById('btn-hidden').classList.contains('selected') ? "隱藏版 " : "") + 
                          (document.getElementById('btn-open').classList.contains('selected') ? "營業中 " : "") + 
@@ -243,26 +179,15 @@
             };
 
             try {
-                const response = await fetch('/api/recommend', {
-                    method: 'POST',
-                    body: JSON.stringify(data)
-                });
+                const response = await fetch('/api/recommend', { method: 'POST', body: JSON.stringify(data) });
                 const res = await response.json();
                 loader.style.display = 'none'; btn.disabled = false; btn.innerText = "開始探索美食";
-                
-                if (res.error) { alert("AI 正在忙碌或 API 金鑰失效。"); return; }
-                
-                // 成功則扣除次數
+                if (res.error) { alert(res.error); return; }
                 localStorage.setItem('USAGE_COUNT', (parseInt(localStorage.getItem('USAGE_COUNT') || '0') + 1).toString());
-                updateUsageDisplay();
-                renderCards(res);
-            } catch (e) {
-                alert("伺服器連線失敗。");
-                loader.style.display = 'none'; btn.disabled = false;
-            }
+                updateUsageDisplay(); renderCards(res);
+            } catch (e) { alert("連線超時或系統忙碌"); loader.style.display = 'none'; btn.disabled = false; }
         }
 
-        /* --- 100% 原始卡片渲染與滑動邏輯 --- */
         let currentLikedList = [], swipedCount = 0, cardsRemaining = 0;
         function renderCards(restaurants) {
             document.getElementById('main-ui').classList.add('blur-mode');
@@ -282,20 +207,8 @@
             let startX, moveX = 0; let isDone = false;
             const likeStamp = el.querySelector('.stamp-like'); const nopeStamp = el.querySelector('.stamp-nope');
             el.addEventListener('touchstart', (e) => { if(isDone) return; startX = e.touches[0].clientX; el.style.transition = 'none'; });
-            el.addEventListener('touchmove', (e) => {
-                if(isDone) return; moveX = e.touches[0].clientX - startX;
-                el.style.transform = `translateX(${moveX}px) rotate(${moveX/20}deg)`;
-                likeStamp.style.opacity = moveX > 20 ? Math.min(moveX/100, 1) : 0;
-                nopeStamp.style.opacity = moveX < -20 ? Math.min(Math.abs(moveX)/100, 1) : 0;
-            });
-            el.addEventListener('touchend', () => {
-                if(isDone) return; el.style.transition = 'transform 0.4s ease, opacity 0.4s ease';
-                if(Math.abs(moveX) > 100) {
-                    const dir = moveX > 0 ? 1 : -1;
-                    if(isLastOne) { if(dir === 1) { el.style.transform = 'translateX(0)'; likeStamp.style.opacity = 1; isDone = true; } else resetUI(); }
-                    else { if(dir === 1) currentLikedList.push(resData); el.style.transform = `translateX(${dir*150}%)`; setTimeout(() => { wrapper.remove(); swipedCount++; if(swipedCount === cardsRemaining) { if(currentLikedList.length > 0) renderCards(currentLikedList); else resetUI(); } }, 300); }
-                } else { el.style.transform = 'translateX(0)'; likeStamp.style.opacity = 0; nopeStamp.style.opacity = 0; }
-            });
+            el.addEventListener('touchmove', (e) => { if(isDone) return; moveX = e.touches[0].clientX - startX; el.style.transform = `translateX(${moveX}px) rotate(${moveX/20}deg)`; likeStamp.style.opacity = moveX > 20 ? Math.min(moveX/100, 1) : 0; nopeStamp.style.opacity = moveX < -20 ? Math.min(Math.abs(moveX)/100, 1) : 0; });
+            el.addEventListener('touchend', () => { if(isDone) return; el.style.transition = 'transform 0.4s ease, opacity 0.4s ease'; if(Math.abs(moveX) > 100) { const dir = moveX > 0 ? 1 : -1; if(isLastOne) { if(dir === 1) { el.style.transform = 'translateX(0)'; likeStamp.style.opacity = 1; isDone = true; } else resetUI(); } else { if(dir === 1) currentLikedList.push(resData); el.style.transform = `translateX(${dir*150}%)`; setTimeout(() => { wrapper.remove(); swipedCount++; if(swipedCount === cardsRemaining) { if(currentLikedList.length > 0) renderCards(currentLikedList); else resetUI(); } }, 300); } } else { el.style.transform = 'translateX(0)'; likeStamp.style.opacity = 0; nopeStamp.style.opacity = 0; } });
         }
         function resetUI() { document.getElementById('swiper-overlay').style.display = 'none'; document.getElementById('main-ui').classList.remove('blur-mode'); }
     </script>
