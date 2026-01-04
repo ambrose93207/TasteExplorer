@@ -1,6 +1,6 @@
 {
-  "name": "EatExplorer 美食探索",
-  "short_name": "EatExplorer",
+  "name": "TasteExplorer - 巷弄探索",
+  "short_name": "TasteExplorer",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",
