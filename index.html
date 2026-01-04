@@ -11,38 +11,39 @@
     <style>
         :root { --primary-orange: #FF6600; --glass-bg: rgba(25, 25, 25, 0.85); --glass-border: rgba(255, 255, 255, 0.15); --input-bg: rgba(255, 255, 255, 0.1); --text-color: #ffffff; --label-color: #cccccc; --accent-yellow: #FFCC00; }
         
-        /* 基礎布局優化：使用 dvh 確保動態高度準確 */
-        html, body { overscroll-behavior-y: none; height: 100dvh; overflow: hidden; position: fixed; width: 100%; margin: 0; padding: 0; background-color: #000; }
-        html { font-size: 14px; } 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif; }
+        /* 基礎布局：強制填滿並禁止外部滾動 */
+        html, body { overscroll-behavior: none; height: 100dvh; overflow: hidden; position: fixed; width: 100%; margin: 0; padding: 0; background-color: #000; }
+        html { font-size: 14px; } * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif; }
         body { color: #fff; display: flex; align-items: center; justify-content: center; }
 
-        /* 背景保持比例覆蓋，不因手機長寬比變形 */
-        #bg-container { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; z-index: -1; pointer-events: none; }
+        /* 背景：確保完全覆蓋不留白 */
+        #bg-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
         .bg-slide { position: absolute; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; transition: opacity 1s; }
         .bg-slide.active { opacity: 0.6; }
 
-        /* 主容器自適應優化 */
+        /* 主容器：使用居中布局解決失衡問題 */
         .container { 
-            width: 100%; 
-            max-width: 400px; /* 稍微放寬最大寬度以適應大螢幕 */
+            width: 95%; 
+            max-width: 375px; 
             height: 100dvh; 
             z-index: 10; 
             display: flex; 
             flex-direction: column; 
-            justify-content: space-between; 
+            justify-content: center; /* 垂直置中 */
             align-items: center; 
-            transition: filter 0.5s ease, transform 0.5s ease; 
-            padding: env(safe-area-inset-top) 15px env(safe-area-inset-bottom) 15px; /* 適應瀏海屏與底部橫條 */
+            gap: 12px; /* 元素間距 */
+            padding-top: calc(15px + env(safe-area-inset-top)); /* 避開靈動島 */
+            padding-bottom: calc(15px + env(safe-area-inset-bottom)); /* 避開底部橫條 */
+            transition: filter 0.5s ease, transform 0.5s ease;
         }
         .container.blur-mode { filter: blur(15px) brightness(0.4); transform: scale(0.95); pointer-events: none; }
 
-        /* Header 縮小間距以騰出空間 */
-        .header { width: 100%; flex: 0 1 auto; padding: 15px 0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
-        .logo { font-size: clamp(2rem, 8vw, 2.77rem); font-weight: 800; color: var(--primary-orange); line-height: 1.2; letter-spacing: -1px; }
+        /* Header：縮小間距防止壓迫 */
+        .header { width: 100%; text-align: center; text-shadow: 0 2px 10px rgba(0,0,0,0.5); flex-shrink: 0; }
+        .logo { font-size: 2.5rem; font-weight: 800; color: var(--primary-orange); line-height: 1.1; letter-spacing: -1px; }
         .tagline { font-size: 1.1rem; opacity: 0.8; margin-top: 4px; }
 
-        /* 卡片區域增加滾動支持，防止短手機裁切內容 */
+        /* 卡片區域：自適應高度並允許內部滾動 */
         .glass-card { 
             width: 100%; 
             background: rgba(20, 20, 20, 0.75); 
@@ -52,20 +53,14 @@
             padding: 18px; 
             border: 1px solid var(--glass-border); 
             text-align: left; 
-            flex: 1 1 auto; /* 允許此區域根據剩餘空間伸縮 */
-            overflow-y: auto; /* 當內容過多時可內部滾動 */
-            margin: 10px 0;
-            scrollbar-width: none; /* 隱藏捲軸但保持滾動功能 (Firefox) */
+            overflow-y: auto; 
+            max-height: 65vh; /* 限制最大高度，防止擠壓上下 */
         }
-        .glass-card::-webkit-scrollbar { display: none; } /* 隱藏捲軸 (Chrome/Safari) */
-
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .full-width { grid-column: span 2; }
         label { font-size: 0.75rem; color: var(--label-color); margin-bottom: 4px; display: block; font-weight: 600; }
-        
         .input-box { background: var(--input-bg); border-radius: 10px; height: 38px; display: flex; align-items: center; padding: 0 10px; border: 1px solid transparent; transition: 0.3s; }
         .input-box:focus-within { border-color: var(--primary-orange); box-shadow: 0 0 8px rgba(255, 102, 0, 0.3); }
-        
         select { background: transparent; border: none; color: white; width: 100%; outline: none; font-size: 0.85rem; appearance: none; cursor: pointer; }
         select option { background-color: #222; }
         
@@ -74,50 +69,43 @@
         .toggle-btn.selected { background: rgba(255,102,0,0.2); border-color: var(--primary-orange); color: var(--primary-orange); font-weight: bold; }
         #btn-open.selected { background: rgba(46,204,113,0.15); border-color: #2ecc71; color: #2ecc71; }
 
-        /* 底部按鈕區域固定 */
-        .footer-action { width: 100%; flex: 0 0 auto; padding: 10px 0 20px 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        /* Footer：固定在下方但維持間距 */
+        .footer-action { width: 100%; display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
         .cta-button { width: 100%; background: linear-gradient(180deg, #FF8533, #FF6600); border: none; padding: 16px; font-weight: 700; border-radius: 16px; color: #fff; cursor: pointer; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(255, 102, 0, 0.4); }
         .cta-button:disabled { background: linear-gradient(180deg, #888, #666); cursor: not-allowed; box-shadow: none; }
-        .usage-hint { font-size: 0.85rem; margin-top: 10px; opacity: 0.7; color: #fff; font-weight: 500; }
+        .usage-hint { font-size: 0.85rem; margin-top: 8px; opacity: 0.7; color: #fff; font-weight: 500; }
 
         /* Loader */
-        #loader { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
+        #loader { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); }
         .spinner { width: 50px; height: 50px; border: 5px solid rgba(255,102,0,0.1); border-top-color: var(--primary-orange); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 12px; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Swiper Overlay 調整 */
-        #swiper-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; z-index: 100; display: none; flex-direction: column; align-items: center; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); }
-        .card-stack { width: 100%; max-width: 360px; height: 100%; display: flex; flex-direction: column; align-items: center; overflow-y: auto; padding: 20px 0 120px 0; gap: 20px; scrollbar-width: none; }
-        .card-stack::-webkit-scrollbar { display: none; }
+        /* 結果卡片：禁止 X 軸溢出，確保滑動選擇不干擾 */
+        #swiper-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; display: none; flex-direction: column; align-items: center; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); }
+        .card-stack { width: 100%; max-width: 360px; height: 100%; display: flex; flex-direction: column; align-items: center; overflow-y: auto; overflow-x: hidden; /* 防止左右晃動 */ padding: 20px 0 150px 0; gap: 20px; }
         .swipe-card-wrapper { width: 92%; flex-shrink: 0; transition: transform 0.4s ease, opacity 0.4s ease; touch-action: pan-y; position: relative; }
         .swipe-card { width: 100%; background: var(--glass-bg); border-radius: 24px; border: 1px solid var(--glass-border); padding: 20px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; overflow: hidden; }
         
         .stamp { position: absolute; top: 20px; padding: 5px 15px; border: 4px solid; border-radius: 8px; font-size: 2rem; font-weight: 900; opacity: 0; pointer-events: none; z-index: 10; }
         .stamp-like { left: 20px; color: #2ecc71; border-color: #2ecc71; transform: rotate(-15deg); }
         .stamp-nope { right: 20px; color: #e74c3c; border-color: #e74c3c; transform: rotate(15deg); }
-        
         .swipe-card h3 { color: var(--primary-orange); font-size: 1.4rem; font-weight: 800; margin: 0; }
         .card-badges { display: flex; gap: 6px; }
         .card-badge { padding: 3px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; }
         .badge-rating { background: var(--accent-yellow); color: #000; }
         .badge-price { background: rgba(255,255,255,0.1); color: #eee; }
-        
         .info-row { font-size: 0.85rem; display: flex; gap: 6px; color: #ddd; line-height: 1.4; }
         .info-label { color: var(--primary-orange); font-weight: bold; flex-shrink: 0; }
         .card-summary { font-size: 0.88rem; font-style: italic; opacity: 0.85; border-left: 2px solid var(--primary-orange); padding-left: 10px; margin: 5px 0; line-height: 1.4; }
         .card-map-btn { background: var(--primary-orange); color: #fff; text-decoration: none; padding: 12px; border-radius: 14px; text-align: center; font-weight: bold; margin-top: 10px; font-size: 0.95rem; }
-        
-        .close-swiper { position: fixed; bottom: clamp(20px, 5vh, 40px); background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 12px 30px; border-radius: 50px; cursor: pointer; z-index: 120; font-weight: bold; backdrop-filter: blur(10px); }
-        #round-info { background: rgba(255, 102, 0, 0.2); border: 1px solid var(--primary-orange); padding: 8px 20px; border-radius: 50px; margin-top: 30px; margin-bottom: 10px; font-weight: bold; z-index: 110; pointer-events: none; }
+        .close-swiper { position: fixed; bottom: calc(20px + env(safe-area-inset-bottom)); background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 12px 30px; border-radius: 50px; cursor: pointer; z-index: 120; font-weight: bold; backdrop-filter: blur(10px); }
+        #round-info { background: rgba(255, 102, 0, 0.2); border: 1px solid var(--primary-orange); padding: 8px 20px; border-radius: 50px; margin-top: calc(10px + env(safe-area-inset-top)); margin-bottom: 10px; font-weight: bold; z-index: 110; pointer-events: none; }
     </style>
 </head>
 <body touch-action="none">
     <div id="bg-container"></div>
     <div class="container" id="main-ui">
-        <div class="header">
-            <div class="logo">TasteExplorer</div>
-            <div class="tagline">探索隱藏美味 享受極致饗宴</div>
-        </div>
+        <div class="header"><div class="logo">TasteExplorer</div><div class="tagline">探索隱藏美味 享受極致饗宴</div></div>
         <div class="glass-card">
             <div class="form-grid">
                 <div class="form-group"><label>📍 縣市</label><div class="input-box"><select id="city" onchange="updateDistricts(); checkTransAvailability();"><optgroup label="北部地區"><option value="Taipei" selected>台北市</option><option value="NewTaipei">新北市</option><option value="Keelung">基隆市</option><option value="Taoyuan">桃園市</option><option value="HsinchuCity">新竹市</option><option value="HsinchuCounty">新竹縣</option><option value="Yilan">宜蘭縣</option></optgroup><optgroup label="中部地區"><option value="Miaoli">苗栗縣</option><option value="Taichung">台中市</option><option value="Changhua">彰化縣</option><option value="Nantou">南投縣</option><option value="Yunlin">雲林縣</option></optgroup><optgroup label="南部地區"><option value="ChiayiCity">嘉義市</option><option value="ChiayiCounty">嘉義縣</option><option value="Tainan">台南市</option><option value="Kaohsiung">高雄市</option><option value="Pingtung">屏東縣</option></optgroup><optgroup label="東部與離島"><option value="Hualien">花蓮縣</option><option value="Taitung">台東縣</option><option value="Penghu">澎湖縣</option><option value="Kinmen">金門縣</option><option value="Lienchiang">連江縣</option></optgroup></select></div></div>
@@ -131,27 +119,17 @@
                 <div class="form-group full-width"><div class="toggle-row"><div id="btn-hidden" class="toggle-btn" onclick="this.classList.toggle('selected')">🤫 隱藏版</div><div id="btn-open" class="toggle-btn" onclick="this.classList.toggle('selected')">🕒 營業中</div></div></div>
             </div>
         </div>
-        <div class="footer-action">
-            <button id="search-btn" class="cta-button" onclick="handleSearchClick()">開始探索美食</button>
-            <div id="usage-text" class="usage-hint">今日剩餘次數：-- 次</div>
-        </div>
+        <div class="footer-action"><button id="search-btn" class="cta-button" onclick="handleSearchClick()">開始探索美食</button><div id="usage-text" class="usage-hint">今日剩餘次數：-- 次</div></div>
     </div>
-    
     <div id="loader"><div class="spinner"></div><p style="color:white; font-weight:bold;">正在穿梭巷弄中...</p></div>
-    
-    <div id="swiper-overlay">
-        <div id="round-info"></div>
-        <div class="card-stack" id="stack"></div>
-        <button class="close-swiper" onclick="resetUI()">← 返回調整</button>
-    </div>
+    <div id="swiper-overlay"><div id="round-info"></div><div class="card-stack" id="stack"></div><button class="close-swiper" onclick="resetUI()">← 返回調整</button></div>
 
-    <!-- 腳本部分保持 100% 原始邏輯 -->
     <script>
         const DAILY_LIMIT = 15;
         const images = ['https://images.unsplash.com/photo-1555939594-58d7cb561ad1', 'https://images.unsplash.com/photo-1594046243098-0fceea9d451e', 'https://images.unsplash.com/photo-1563245372-f21724e3856d', 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd', 'https://images.unsplash.com/photo-1504674900247-0877df9cc836', 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38'];
         const bg = document.getElementById('bg-container');
         images.forEach((url, i) => { const div = document.createElement('div'); div.className = 'bg-slide' + (i===0?' active':''); div.style.backgroundImage = `url('${url}?auto=format&fit=crop&w=1200')`; bg.appendChild(div); });
-        let slideIdx = 0; setInterval(() => { const s = document.querySelectorAll('.bg-slide'); if(s.length===0)return; s[slideIdx].classList.remove('active'); slideIdx = (slideIdx+1)%s.length; s[slideIdx].classList.add('active'); }, 6000);
+        let slideIdx = 0; setInterval(() => { const s = document.querySelectorAll('.bg-slide'); s[slideIdx].classList.remove('active'); slideIdx = (slideIdx+1)%s.length; s[slideIdx].classList.add('active'); }, 6000);
 
         const cityData = { 'Taipei': ['全區', '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區'], 'NewTaipei': ['全區', '板橋區', '三重區', '中和區', '永和區', '新莊區', '新店區', '土城區', '蘆洲區', '樹林區', '鶯歌區', '三峽區', '淡水區', '汐止區', '瑞芳區', '五股區', '泰山區', '林口區', '深坑區', '石碇區', '坪林區', '三芝區', '石門區', '八里區', '平溪區', '雙溪區', '貢寮區', '金山區', '萬里區', '烏來區'], 'Keelung': ['全區', '仁愛區', '信義區', '中正區', '中山區', '安樂區', '暖暖區', '七堵區'], 'Taoyuan': ['全區', '桃園區', '中壢區', '平鎮區', '八德區', '楊梅區', '蘆竹區', '大溪區', '龍潭區', '龜山區', '大園區', '觀音區', '新屋區', '復興區'], 'HsinchuCity': ['全區', '東區', '北區', '香山區'], 'HsinchuCounty': ['全區', '竹北市', '竹東鎮', '新埔鎮', '關西鎮', '湖口鄉', '新豐鄉', '峨眉鄉', '寶山鄉', '北埔鄉', '橫山鄉', '芎林鄉', '尖石鄉', '五峰鄉'], 'Yilan': ['全區', '宜蘭市', '羅東鎮', '蘇澳鎮', '頭城鎮', '礁溪鄉', '壯圍鄉', '員山鄉', '冬山鄉', '五結鄉', '三星鄉', '大同鄉', '南澳鄉'], 'Miaoli': ['全區', '苗栗市', '頭份市', '竹南鎮', '後龍鎮', '通霄鎮', '苑裡鎮', '卓蘭鎮', '造橋鄉', '西湖鄉', '頭屋鄉', '公館鄉', '銅鑼鄉', '三義鄉', '大湖鄉', '獅潭鄉', '三灣鄉', '南庄鄉', '泰安鄉'], 'Taichung': ['全區', '中區', '東區', '南區', '西區', '北區', '北屯區', '西屯區', '南屯區', '太平區', '大里區', '霧峰區', '烏日區', '豐原區', '後里區', '石岡區', '東勢區', '和平區', '新社區', '潭子區', '大雅區', '神岡區', '大肚區', '龍井區', '梧棲區', '清水區', '大甲區', '外埔區', '大安區'], 'Changhua': ['全區', '彰化市', '員林市', '和美鎮', '鹿港鎮', '溪湖鎮', '二林鎮', '田中鎮', '北斗鎮', '花壇鄉', '芬園鄉', '大村鄉', '永靖鄉', '伸港鄉', '線西鄉', '福興鄉', '秀水鄉', '埔心鄉', '埔鹽鄉', '大城鄉', '芳苑鄉', '竹塘鄉', '社頭鄉', '二水鄉', '溪州鄉', '田尾鄉', '埤頭鄉'], 'Nantou': ['全區', '南投市', '埔里鎮', '草屯鎮', '竹山鎮', '集集鎮', '名間鄉', '鹿谷鄉', '中寮鄉', '魚池鄉', '國姓鄉', '水里鄉', '信義鄉', '仁愛鄉'], 'Yunlin': ['全區', '斗六市', '斗南鎮', '虎尾鎮', '西螺鎮', '土庫鎮', '北港鎮', '古坑鄉', '大埤鄉', '莿桐鄉', '林內鄉', '二崙鄉', '崙背鄉', '麥寮鄉', '東勢鄉', '褒忠鄉', '台西鄉', '元長鄉', '四湖鄉', '口湖鄉', '水林鄉'], 'ChiayiCity': ['全區', '東區', '西區'], 'ChiayiCounty': ['全區', '太保市', '朴子市', '布袋鎮', '大林鎮', '民雄鄉', '溪口鄉', '新港鄉', '六腳鄉', '東石鄉', '義竹鄉', '鹿草鄉', '水上鄉', '中埔鄉', '竹崎鄉', '梅山鄉', '番路鄉', '大埔鄉', '阿里山鄉'], 'Tainan': ['全區', '中西區', '東區', '南區', '北區', '安平區', '安南區', '永康區', '歸仁區', '新化區', '玉井區', '仁德區', '關廟區', '官田區', '麻豆區', '佳里區', '新營區', '善化區'], 'Kaohsiung': ['全區', '楠梓區', '左營區', '鼓山區', '三民區', '鹽埕區', '前金區', '新興區', '苓雅區', '前鎮區', '旗津區', '小港區', '鳳山區', '大寮區', '鳥松區', '林園區', '仁武區', '大樹區', '大社區', '岡山區', '路竹區', '旗山區', '美濃區'], 'Pingtung': ['全區', '屏東市', '潮州鎮', '東港鎮', '恆春鎮', '萬丹鄉', '長治鄉', '里港鄉', '內埔鄉', '枋寮鄉', '車城鄉'], 'Hualien': ['全區', '花蓮市', '鳳林鎮', '玉里鎮', '新城鄉', '吉安鄉', '壽豐鄉', '光復鄉', '瑞穗鄉'], 'Taitung': ['全區', '台東市', '成功鎮', '關山鎮', '卑南鄉', '鹿野鄉', '池上鄉', '綠島鄉', '蘭嶼鄉'], 'Penghu': ['全區', '馬公市', '湖西鄉', '白沙鄉', '西嶼鄉'], 'Kinmen': ['全區', '金城鎮', '金湖鎮', '金沙鎮', '金寧鄉'], 'Lienchiang': ['全區', '南竿鄉', '北竿鄉', '莒光鄉', '東引鄉'] };
         function updateDistricts() { const city = document.getElementById('city').value; const distSelect = document.getElementById('district'); distSelect.innerHTML = cityData[city].map(d => `<option value="${d}">${d}</option>`).join(''); }
