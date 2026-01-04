@@ -7,112 +7,73 @@
     <link rel="apple-touch-icon" href="/icon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TasteExplorer - 巷弄探索</title>
+    <title>TasteExplorer - 美食探索</title>
     <style>
-        :root {
-            --primary-orange: #FF6600;
-            --glass-bg: rgba(25, 25, 25, 0.85);
-            --glass-border: rgba(255, 255, 255, 0.15);
-            --input-bg: rgba(255, 255, 255, 0.1);
-            --text-color: #ffffff;
-            --label-color: #cccccc;
-            --accent-yellow: #FFCC00;
-        }
-
-        /* 基礎設置：防止整體滾動 */
-        html, body { 
-            overscroll-behavior: none; 
-            height: 100dvh; 
-            overflow: hidden; 
-            position: fixed; 
-            width: 100%; 
-            margin: 0; 
-            padding: 0; 
-            background-color: #000; 
-        }
-        html { font-size: 14px; } 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif; }
+        :root { --primary-orange: #FF6600; --glass-bg: rgba(25, 25, 25, 0.85); --glass-border: rgba(255, 255, 255, 0.15); --input-bg: rgba(255, 255, 255, 0.1); --text-color: #ffffff; --label-color: #cccccc; --accent-yellow: #FFCC00; }
         
+        /* 100% 原始背景與基礎設置 */
+        html, body { overscroll-behavior-y: none; height: 100%; overflow: hidden; position: fixed; width: 100%; margin: 0; padding: 0; background-color: #000; }
+        html { font-size: 14px; } * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif; }
         body { color: #fff; display: flex; align-items: center; justify-content: center; }
-
-        /* 背景：確保完全覆蓋 */
+        
         #bg-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
         .bg-slide { position: absolute; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; transition: opacity 1s; }
         .bg-slide.active { opacity: 0.6; }
 
-        /* 主容器：解決靈動島與垂直平衡 */
+        /* 恢復 Google 版本的比例：justify-content: space-between */
         .container { 
             width: 95%; 
-            max-width: 375px; 
+            max-width: 357px; 
             height: 100dvh; 
             z-index: 10; 
             display: flex; 
             flex-direction: column; 
-            justify-content: center; /* 讓內容在螢幕垂直置中 */
+            justify-content: space-between; 
             align-items: center; 
             transition: filter 0.5s ease, transform 0.5s ease; 
-            /* 適應安全區域，防止被靈動島遮擋 */
-            padding: calc(10px + env(safe-area-inset-top)) 0 calc(10px + env(safe-area-inset-bottom)) 0;
-            gap: 15px; 
+            padding: 20px 0; /* 恢復 20px 間距，避開邊緣 */
         }
         .container.blur-mode { filter: blur(15px) brightness(0.4); transform: scale(0.95); pointer-events: none; }
 
-        .header { width: 100%; text-align: center; text-shadow: 0 2px 10px rgba(0,0,0,0.5); flex-shrink: 0; }
-        .logo { font-size: 2.6rem; font-weight: 800; color: var(--primary-orange); line-height: 1.2; letter-spacing: -1px; }
-        .tagline { font-size: 1.15rem; opacity: 0.8; margin-top: 4px; }
+        /* 讓 Header 與 Footer 彈性撐開，達成垂直居中平衡 */
+        .header { width: 100%; flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        .logo { font-size: 2.77rem; font-weight: 800; color: var(--primary-orange); line-height: 1.2; letter-spacing: -1px; }
+        .tagline { font-size: 1.2rem; opacity: 0.8; margin-top: 6px; }
 
-        /* 表單區域：加入 max-height 與捲軸，防止超出螢幕 */
-        .glass-card { 
-            width: 100%; 
-            background: rgba(20, 20, 20, 0.75); 
-            backdrop-filter: blur(20px); 
-            -webkit-backdrop-filter: blur(20px); 
-            border-radius: 20px; 
-            padding: 18px; 
-            border: 1px solid var(--glass-border); 
-            text-align: left; 
-            flex-shrink: 1; /* 允許在小螢幕縮小 */
-            overflow-y: auto; /* 內容多時內部滾動 */
-            max-height: 62vh; /* 限制高度防止推擠標題或按鈕 */
-        }
-        .glass-card::-webkit-scrollbar { display: none; } /* 隱藏捲軸但可滾動 */
-
+        /* 卡片本體不縮放 */
+        .glass-card { width: 100%; background: rgba(20, 20, 20, 0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 20px; padding: 18px; border: 1px solid var(--glass-border); text-align: left; flex-shrink: 0; }
+        
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .full-width { grid-column: span 2; }
         label { font-size: 0.75rem; color: var(--label-color); margin-bottom: 4px; display: block; font-weight: 600; }
-        
         .input-box { background: var(--input-bg); border-radius: 10px; height: 38px; display: flex; align-items: center; padding: 0 10px; border: 1px solid transparent; transition: 0.3s; }
         .input-box:focus-within { border-color: var(--primary-orange); box-shadow: 0 0 8px rgba(255, 102, 0, 0.3); }
-        
         select { background: transparent; border: none; color: white; width: 100%; outline: none; font-size: 0.85rem; appearance: none; cursor: pointer; }
         select option { background-color: #222; }
-        
         .toggle-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
         .toggle-btn { background: var(--input-bg); height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid transparent; font-size: 0.85rem; transition: 0.3s; user-select: none; }
         .toggle-btn.selected { background: rgba(255,102,0,0.2); border-color: var(--primary-orange); color: var(--primary-orange); font-weight: bold; }
         #btn-open.selected { background: rgba(46,204,113,0.15); border-color: #2ecc71; color: #2ecc71; }
 
-        .footer-action { width: 100%; display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+        .footer-action { width: 100%; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .cta-button { width: 100%; background: linear-gradient(180deg, #FF8533, #FF6600); border: none; padding: 16px; font-weight: 700; border-radius: 16px; color: #fff; cursor: pointer; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(255, 102, 0, 0.4); }
-        .cta-button:disabled { background: linear-gradient(180deg, #888, #666); cursor: not-allowed; box-shadow: none; }
         .usage-hint { font-size: 0.85rem; margin-top: 10px; opacity: 0.7; color: #fff; font-weight: 500; }
 
-        /* Loader: 100% 原始旋轉設計 */
-        #loader { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); }
+        /* Loader */
+        #loader { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; background: none; }
         .spinner { width: 50px; height: 50px; border: 5px solid rgba(255,102,0,0.1); border-top-color: var(--primary-orange); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 12px; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* 結果卡片層：解決滑動干擾 */
+        /* 卡片疊加層：修正左右晃動 */
         #swiper-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; display: none; flex-direction: column; align-items: center; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); overflow: hidden; }
-        .card-stack { width: 100%; max-width: 360px; height: 100%; display: flex; flex-direction: column; align-items: center; overflow-y: auto; overflow-x: hidden; padding: 20px 0 140px 0; gap: 20px; }
+        .card-stack { width: 100%; max-width: 340px; height: 100%; display: flex; flex-direction: column; align-items: center; overflow-y: auto; overflow-x: hidden; padding: 20px 0 120px 0; gap: 20px; }
         .swipe-card-wrapper { width: 92%; flex-shrink: 0; transition: transform 0.4s ease, opacity 0.4s ease; touch-action: pan-y; position: relative; }
         .swipe-card { width: 100%; background: var(--glass-bg); border-radius: 24px; border: 1px solid var(--glass-border); padding: 20px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; overflow: hidden; }
         
         .stamp { position: absolute; top: 20px; padding: 5px 15px; border: 4px solid; border-radius: 8px; font-size: 2rem; font-weight: 900; opacity: 0; pointer-events: none; z-index: 10; }
         .stamp-like { left: 20px; color: #2ecc71; border-color: #2ecc71; transform: rotate(-15deg); }
         .stamp-nope { right: 20px; color: #e74c3c; border-color: #e74c3c; transform: rotate(15deg); }
-        
-        .swipe-card h3 { color: var(--primary-orange); font-size: 1.4rem; font-weight: 800; margin: 0; }
+        .swipe-card h3 { color: var(--primary-orange); font-size: 1.4rem; font-weight: 800; }
         .card-badges { display: flex; gap: 6px; }
         .card-badge { padding: 3px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; }
         .badge-rating { background: var(--accent-yellow); color: #000; }
@@ -121,90 +82,50 @@
         .info-label { color: var(--primary-orange); font-weight: bold; flex-shrink: 0; }
         .card-summary { font-size: 0.88rem; font-style: italic; opacity: 0.85; border-left: 2px solid var(--primary-orange); padding-left: 10px; margin: 5px 0; line-height: 1.4; }
         .card-map-btn { background: var(--primary-orange); color: #fff; text-decoration: none; padding: 12px; border-radius: 14px; text-align: center; font-weight: bold; margin-top: 10px; font-size: 0.95rem; }
-        
-        .close-swiper { position: fixed; bottom: calc(20px + env(safe-area-inset-bottom)); background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 12px 30px; border-radius: 50px; cursor: pointer; z-index: 120; font-weight: bold; backdrop-filter: blur(10px); }
+        .close-swiper { position: fixed; bottom: 40px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 12px 30px; border-radius: 50px; cursor: pointer; z-index: 120; font-weight: bold; backdrop-filter: blur(10px); }
         #round-info { background: rgba(255, 102, 0, 0.2); border: 1px solid var(--primary-orange); padding: 8px 20px; border-radius: 50px; margin-top: 30px; margin-bottom: 10px; font-weight: bold; z-index: 110; pointer-events: none; }
     </style>
 </head>
 <body touch-action="none">
-
     <div id="bg-container"></div>
-
     <div class="container" id="main-ui">
-        <div class="header">
-            <div class="logo">TasteExplorer</div>
-            <div class="tagline">探索隱藏美味 享受極致饗宴</div>
-        </div>
-
+        <div class="header"><div class="logo">TasteExplorer</div><div class="tagline">探索隱藏美味 享受極致饗宴</div></div>
         <div class="glass-card">
             <div class="form-grid">
-                <!-- 縣市與行政區 -->
-                <div class="form-group"><label>📍 縣市</label><div class="input-box">
-                    <select id="city" onchange="updateDistricts(); checkTransAvailability();">
-                        <optgroup label="北部地區"><option value="Taipei" selected>台北市</option><option value="NewTaipei">新北市</option><option value="Keelung">基隆市</option><option value="Taoyuan">桃園市</option><option value="HsinchuCity">新竹市</option><option value="HsinchuCounty">新竹縣</option><option value="Yilan">宜蘭縣</option></optgroup>
-                        <optgroup label="中部地區"><option value="Miaoli">苗栗縣</option><option value="Taichung">台中市</option><option value="Changhua">彰化縣</option><option value="Nantou">南投縣</option><option value="Yunlin">雲林縣</option></optgroup>
-                        <optgroup label="南部地區"><option value="ChiayiCity">嘉義市</option><option value="ChiayiCounty">嘉義縣</option><option value="Tainan">台南市</option><option value="Kaohsiung">高雄市</option><option value="Pingtung">屏東縣</option></optgroup>
-                        <optgroup label="東部與離島"><option value="Hualien">花蓮縣</option><option value="Taitung">台東縣</option><option value="Penghu">澎湖縣</option><option value="Kinmen">金門縣</option><option value="Lienchiang">連江縣</option></optgroup>
-                    </select>
-                </div></div>
+                <div class="form-group"><label>📍 縣市</label><div class="input-box"><select id="city" onchange="updateDistricts(); checkTransAvailability();"><optgroup label="北部地區"><option value="Taipei" selected>台北市</option><option value="NewTaipei">新北市</option><option value="Keelung">基隆市</option><option value="Taoyuan">桃園市</option><option value="HsinchuCity">新竹市</option><option value="HsinchuCounty">新竹縣</option><option value="Yilan">宜蘭縣</option></optgroup><optgroup label="中部地區"><option value="Miaoli">苗栗縣</option><option value="Taichung">台中市</option><option value="Changhua">彰化縣</option><option value="Nantou">南投縣</option><option value="Yunlin">雲林縣</option></optgroup><optgroup label="南部地區"><option value="ChiayiCity">嘉義市</option><option value="ChiayiCounty">嘉義縣</option><option value="Tainan">台南市</option><option value="Kaohsiung">高雄市</option><option value="Pingtung">屏東縣</option></optgroup><optgroup label="東部與離島"><option value="Hualien">花蓮縣</option><option value="Taitung">台東縣</option><option value="Penghu">澎湖縣</option><option value="Kinmen">金門縣</option><option value="Lienchiang">連江縣</option></optgroup></select></div></div>
                 <div class="form-group"><label>🏙️ 行政區</label><div class="input-box"><select id="district" onchange="checkTransAvailability();"><option>全區</option></select></div></div>
-
-                <div class="form-group full-width"><label>🚆 交通偏好</label><div class="input-box">
-                    <select id="transport" onchange="checkTransAvailability()">
-                        <option value="none" selected>🤷‍♂️ 不拘</option>
-                        <option value="mrt">🚇 鄰近捷運站</option>
-                        <option value="hsr">🚄 鄰近高鐵站</option>
-                        <option value="train">🚂 鄰近火車站</option>
-                        <option value="airport">✈️ 鄰近機場</option>
-                    </select>
-                </div></div>
-
+                <div class="form-group full-width"><label>🚆 交通偏好</label><div class="input-box"><select id="transport" onchange="checkTransAvailability()"><option value="none" selected>🤷‍♂️ 不拘</option><option value="mrt">🚇 鄰近捷運站</option><option value="hsr">🚄 鄰近高鐵站</option><option value="train">🚂 鄰近火車站</option><option value="airport">✈️ 鄰近機場</option></select></div></div>
                 <div class="form-group full-width" id="mrt-section" style="display:none;"><label id="trans-label">🚉 指定站點</label><div class="input-box"><select id="mrt-station"></select></div></div>
-
-                <div class="form-group full-width"><label>🤤 想吃什麼？</label><div class="input-box"><select id="food">
-                    <option value="all">全部 (什麼都想吃)</option>
-                    <optgroup label="🔥 熱門精選"><option value="hotpot">火鍋 / 麻辣鍋 / 涮涮鍋</option><option value="bbq">燒肉 / 日式烤肉 / 韓式烤肉</option><option value="steak">牛排 / 鐵板燒</option><option value="buffet">吃到飽 (Buffet)</option></optgroup>
-                    <optgroup label="🍜 台式與中式"><option value="taiwanese_snack">台灣小吃 / 路邊攤</option><option value="beef_noodle">牛肉麵</option><option value="rechao">海鮮熱炒 / 合菜</option><option value="hot_soup">滷味 / 鹽酥雞 / 宵夜</option></optgroup>
-                    <optgroup label="🍣 日式料理"><option value="ramen">日式拉麵 / 烏龍麵</option><option value="sushi">壽司 / 生魚片 / 丼飯</option><option value="izakaya">居酒屋 / 串燒</option><option value="curry">日式咖哩 / 定食</option></optgroup>
-                    <optgroup label="🌍 異國風味"><option value="korean">韓式料理 / 炸雞</option><option value="thai_viet">泰式 / 越式料理</option><option value="american">美式漢堡 / 炸物</option><option value="italian">義式料理 / 披薩 / 義大利麵</option></optgroup>
-                    <optgroup label="☕ 放鬆時刻"><option value="brunch">早午餐 (Brunch)</option><option value="cafe">咖啡廳 / 下午茶 / 甜點</option><option value="bistro">餐酒館 / Bar</option></optgroup>
-                    <optgroup label="🥬 其他"><option value="vegetarian">素食 / 蔬食</option><option value="healthy">健康餐盒 / 輕食</option></optgroup>
-                </select></div></div>
-
+                <div class="form-group full-width"><label>🤤 想吃什麼？</label><div class="input-box"><select id="food"><option value="all">全部 (什麼都想吃)</option><optgroup label="🔥 熱門精選"><option value="hotpot">火鍋 / 麻辣鍋 / 涮涮鍋</option><option value="bbq">燒肉 / 日式烤肉 / 韓式烤肉</option><option value="steak">牛排 / 鐵板燒</option><option value="buffet">吃到飽 (Buffet)</option></optgroup><optgroup label="🍜 台式與中式"><option value="taiwanese_snack">台灣小吃 / 路邊攤</option><option value="beef_noodle">牛肉麵</option><option value="rechao">海鮮熱炒 / 合菜</option><option value="hot_soup">滷味 / 鹽酥雞 / 宵夜</option></optgroup><optgroup label="🍣 日式料理"><option value="ramen">日式拉麵 / 烏龍麵</option><option value="sushi">壽司 / 生魚片 / 丼飯</option><option value="izakaya">居酒屋 / 串燒</option><option value="curry">日式咖哩 / 定食</option></optgroup><optgroup label="🌍 異國風味"><option value="korean">韓式料理 / 炸雞</option><option value="thai_viet">泰式 / 越式料理</option><option value="american">美式漢堡 / 炸物</option><option value="italian">義式料理 / 披薩 / 義大利麵</option></optgroup><optgroup label="☕ 放鬆時刻"><option value="brunch">早午餐 (Brunch)</option><option value="cafe">咖啡廳 / 下午茶 / 甜點</option><option value="bistro">餐酒館 / Bar</option></optgroup><optgroup label="🥬 其他"><option value="vegetarian">素食 / 蔬食</option><option value="healthy">健康餐盒 / 輕食</option></optgroup></select></div></div>
                 <div class="form-group full-width"><label>👥 人數</label><div class="input-box"><select id="people"><option selected>1~2 人</option><option>2~4 人</option><option>4~6 人</option><option>6 人以上</option></select></div></div>
                 <div class="form-group full-width"><label>🎯 用餐目的</label><div class="input-box"><select id="purpose"><option>🤷‍♂️ 不拘 (隨意吃吃)</option><option>👯 朋友聚餐 (熱鬧)</option><option>💑 情侶約會 (氣氛)</option><option>👨‍👩‍👧‍👦 家庭聚會 (長輩/小孩)</option><option>🧘 一人獨享 (安靜)</option><option>💼 商務宴請 (正式)</option><option>🌙 宵夜場 (深夜)</option><option>📸 IG打卡/網美店</option><option>⚡ 快速解決 (趕時間)</option><option>🎉 慶生/紀念日</option></select></div></div>
                 <div class="form-group full-width"><label>💰 預算範圍</label><div class="input-box"><select id="budget"><option value="low">💵 平價 (&lt;$300)</option><option value="mid">💵💵 中價位 ($300～$800)</option><option value="high">💵💵💵 高級 (&gt;$800)</option><option value="luxury">💎 頂級奢華 (&gt;$2000)</option></select></div></div>
                 <div class="form-group full-width"><div class="toggle-row"><div id="btn-hidden" class="toggle-btn" onclick="this.classList.toggle('selected')">🤫 隱藏版</div><div id="btn-open" class="toggle-btn" onclick="this.classList.toggle('selected')">🕒 營業中</div></div></div>
             </div>
         </div>
-
-        <div class="footer-action">
-            <button id="search-btn" class="cta-button" onclick="handleSearchClick()">開始探索美食</button>
-            <div id="usage-text" class="usage-hint">今日剩餘次數：-- 次</div>
-        </div>
+        <div class="footer-action"><button id="search-btn" class="cta-button" onclick="handleSearchClick()">開始探索美食</button><div id="usage-text" class="usage-hint">今日剩餘次數：-- 次</div></div>
     </div>
-
     <div id="loader"><div class="spinner"></div><p style="color:white; font-weight:bold;">正在穿梭巷弄中...</p></div>
     <div id="swiper-overlay"><div id="round-info"></div><div class="card-stack" id="stack"></div><button class="close-swiper" onclick="resetUI()">← 返回調整</button></div>
 
     <script>
-        /* --- 背景與資料庫：維持 100% 原始邏輯 --- */
+        /* --- 腳本邏輯 100% 原始保留 --- */
+        const DAILY_LIMIT = 15;
         const images = ['https://images.unsplash.com/photo-1555939594-58d7cb561ad1', 'https://images.unsplash.com/photo-1594046243098-0fceea9d451e', 'https://images.unsplash.com/photo-1563245372-f21724e3856d', 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd', 'https://images.unsplash.com/photo-1504674900247-0877df9cc836', 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38'];
         const bg = document.getElementById('bg-container');
         images.forEach((url, i) => { const div = document.createElement('div'); div.className = 'bg-slide' + (i===0?' active':''); div.style.backgroundImage = `url('${url}?auto=format&fit=crop&w=1200')`; bg.appendChild(div); });
-        let slideIdx = 0; setInterval(() => { const s = document.querySelectorAll('.bg-slide'); if(!s.length) return; s[slideIdx].classList.remove('active'); slideIdx = (slideIdx+1)%s.length; s[slideIdx].classList.add('active'); }, 6000);
+        let slideIdx = 0; setInterval(() => { const s = document.querySelectorAll('.bg-slide'); s[slideIdx].classList.remove('active'); slideIdx = (slideIdx+1)%s.length; s[slideIdx].classList.add('active'); }, 6000);
 
         const cityData = { 'Taipei': ['全區', '中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區'], 'NewTaipei': ['全區', '板橋區', '三重區', '中和區', '永和區', '新莊區', '新店區', '土城區', '蘆洲區', '樹林區', '鶯歌區', '三峽區', '淡水區', '汐止區', '瑞芳區', '五股區', '泰山區', '林口區', '深坑區', '石碇區', '坪林區', '三芝區', '石門區', '八里區', '平溪區', '雙溪區', '貢寮區', '金山區', '萬里區', '烏來區'], 'Keelung': ['全區', '仁愛區', '信義區', '中正區', '中山區', '安樂區', '暖暖區', '七堵區'], 'Taoyuan': ['全區', '桃園區', '中壢區', '平鎮區', '八德區', '楊梅區', '蘆竹區', '大溪區', '龍潭區', '龜山區', '大園區', '觀音區', '新屋區', '復興區'], 'HsinchuCity': ['全區', '東區', '北區', '香山區'], 'HsinchuCounty': ['全區', '竹北市', '竹東鎮', '新埔鎮', '關西鎮', '湖口鄉', '新豐鄉', '峨眉鄉', '寶山鄉', '北埔鄉', '橫山鄉', '芎林鄉', '尖石鄉', '五峰鄉'], 'Yilan': ['全區', '宜蘭市', '羅東鎮', '蘇澳鎮', '頭城鎮', '礁溪鄉', '壯圍鄉', '員山鄉', '冬山鄉', '五結鄉', '三星鄉', '大同鄉', '南澳鄉'], 'Miaoli': ['全區', '苗栗市', '頭份市', '竹南鎮', '後龍鎮', '通霄鎮', '苑裡鎮', '卓蘭鎮', '造橋鄉', '西湖鄉', '頭屋鄉', '公館鄉', '銅鑼鄉', '三義鄉', '大湖鄉', '獅潭鄉', '三灣鄉', '南庄鄉', '泰安鄉'], 'Taichung': ['全區', '中區', '東區', '南區', '西區', '北區', '北屯區', '西屯區', '南屯區', '太平區', '大里區', '霧峰區', '烏日區', '豐原區', '後里區', '石岡區', '東勢區', '和平區', '新社區', '潭子區', '大雅區', '神岡區', '大肚區', '龍井區', '梧棲區', '清水區', '大甲區', '外埔區', '大安區'], 'Changhua': ['全區', '彰化市', '員林市', '和美鎮', '鹿港鎮', '溪湖鎮', '二林鎮', '田中鎮', '北斗鎮', '花壇鄉', '芬園鄉', '大村鄉', '永靖鄉', '伸港鄉', '線西鄉', '福興鄉', '秀水鄉', '埔心鄉', '埔鹽鄉', '大城鄉', '芳苑鄉', '竹塘鄉', '社頭鄉', '二水鄉', '溪州鄉', '田尾鄉', '埤頭鄉'], 'Nantou': ['全區', '南投市', '埔里鎮', '草屯鎮', '竹山鎮', '集集鎮', '名間鄉', '鹿谷鄉', '中寮鄉', '魚池鄉', '國姓鄉', '水里鄉', '信義鄉', '仁愛鄉'], 'Yunlin': ['全區', '斗六市', '斗南鎮', '虎尾鎮', '西螺鎮', '土庫鎮', '北港鎮', '古坑鄉', '大埤鄉', '莿桐鄉', '林內鄉', '二崙鄉', '崙背鄉', '麥寮鄉', '東勢鄉', '褒忠鄉', '台西鄉', '元長鄉', '四湖鄉', '口湖鄉', '水林鄉'], 'ChiayiCity': ['全區', '東區', '西區'], 'ChiayiCounty': ['全區', '太保市', '朴子市', '布袋鎮', '大林鎮', '民雄鄉', '溪口鄉', '新港鄉', '六腳鄉', '東石鄉', '義竹鄉', '鹿草鄉', '水上鄉', '中埔鄉', '竹崎鄉', '梅山鄉', '番路鄉', '大埔鄉', '阿里山鄉'], 'Tainan': ['全區', '中西區', '東區', '南區', '北區', '安平區', '安南區', '永康區', '歸仁區', '新化區', '玉井區', '仁德區', '關廟區', '官田區', '麻豆區', '佳里區', '新營區', '善化區'], 'Kaohsiung': ['全區', '楠梓區', '左營區', '鼓山區', '三民區', '鹽埕區', '前金區', '新興區', '苓雅區', '前鎮區', '旗津區', '小港區', '鳳山區', '大寮區', '鳥松區', '林園區', '仁武區', '大樹區', '大社區', '岡山區', '路竹區', '旗山區', '美濃區'], 'Pingtung': ['全區', '屏東市', '潮州鎮', '東港鎮', '恆春鎮', '萬丹鄉', '長治鄉', '里港鄉', '內埔鄉', '枋寮鄉', '車城鄉'], 'Hualien': ['全區', '花蓮市', '鳳林鎮', '玉里鎮', '新城鄉', '吉安鄉', '壽豐鄉', '光復鄉', '瑞穗鄉'], 'Taitung': ['全區', '台東市', '成功鎮', '關山鎮', '卑南鄉', '鹿野鄉', '池上鄉', '綠島鄉', '蘭嶼鄉'], 'Penghu': ['全區', '馬公市', '湖西鄉', '白沙鄉', '西嶼鄉'], 'Kinmen': ['全區', '金城鎮', '金湖鎮', '金沙鎮', '金寧鄉'], 'Lienchiang': ['全區', '南竿鄉', '北竿鄉', '莒光鄉', '東引鄉'] };
         function updateDistricts() { const city = document.getElementById('city').value; const distSelect = document.getElementById('district'); distSelect.innerHTML = cityData[city].map(d => `<option value="${d}">${d}</option>`).join(''); }
         updateDistricts();
 
-        /* --- 交通數據邏輯 --- */
         const mrtLinesTaipei = { '板南線 (BL)': ['龍山寺', '西門', '台北車站', '善導寺', '忠孝新生', '忠孝復興', '忠孝敦化', '國父紀念館', '市政府', '永春', '後山埤', '昆陽', '南港', '南港展覽館'], '淡水信義線 (R)': ['象山', '台北101/世貿', '信義安和', '大安', '大安森林公園', '東門', '中正紀念堂', '台大醫院', '台北車站', '中山', '雙連', '民權西路', '圓山', '劍潭', '士林', '芝山', '明德', '石牌', '唭哩岸', '奇岩', '北投', '新北投', '復興崗', '忠義', '關渡'], '松山新店線 (G)': ['景美', '萬隆', '公館', '台電大樓', '古亭', '中正紀念堂', '小南門', '西門', '北門', '中山', '松江南京', '南京復興', '台北小巨蛋', '南京三民', '松山'], '中和新蘆線 (O)': ['古亭', '東門', '忠孝新生', '松江南京', '行天宮', '中山國小', '民權西路', '大橋頭'], '文湖線 (BR)': ['動物園', '木柵', '萬芳社區', '萬芳醫院', '辛亥', '麟光', '六張犁', '科技大樓', '大安', '忠孝復興', '南京復興', '中山國中', '松山機場', '大直', '劍南路', '西湖', '港墘', '文德', '內湖', '大湖公園', '葫洲', '東湖', '南港軟體園區', '南港展覽館'] };
         const mrtLinesNewTaipei = { '板南線 (BL)': ['頂埔', '永寧', '土城', '海山', '亞東醫院', '府中', '板橋', '新埔', '江子翠'], '淡水信義線 (R)': ['竹圍', '紅樹林', '淡水'], '松山新店線 (G)': ['新店', '新店區公所', '七張', '大坪林'], '中和新蘆線 (O)': ['南勢角', '景安', '永安市場', '頂溪', '三重國小', '三和國中', '徐匯中學', '三民高中', '蘆洲', '台北橋', '菜寮', '三重', '先嗇宮', '頭前庄', '新莊', '輔大', '丹鳳', '迴龍'], '環狀線 (Y)': ['大坪林', '十四張', '秀朗橋', '景平', '景安', '中和', '橋和', '中原', '板新', '板橋', '新埔民生', '頭前庄', '幸福', '新北產業園區'] };
         const mrtLinesTaoyuan = { '機場捷運 (A)': ['台北車站', '三重', '新北產業園區', '新莊副都心', '泰山', '泰山貴和', '體育大學', '長庚醫院', '林口', '山鼻', '坑口', '機場第一航廈', '機場第二航廈', '機場旅館', '大園', '橫山', '領航', '高鐵桃園站', '桃園體育園區', '興南', '環北', '老街溪'] };
         const mrtLinesTaichung = { '綠線': ['北屯總站', '舊社', '松竹', '四維國小', '文心崇德', '文心中清', '文華高中', '文心櫻花', '市政府', '水安宮', '文心森林公園', '南屯', '豐樂公園', '大慶', '九張犁', '九德', '烏日', '高鐵台中站'] };
         const mrtLinesKaohsiung = { '紅線 (R)': ['小港', '高雄國際機場', '草衙', '前鎮高中', '凱旋', '獅甲', '三多商圈', '中央公園', '美麗島', '高雄車站', '後驛', '凹子底', '巨蛋', '生態園區', '左營', '世運', '油廠國小', '楠梓科技園區', '後勁', '都會公園', '青埔', '橋頭糖廠', '橋頭火車站', '岡山高醫', '岡山車站'], '橘線 (O)': ['哈瑪星', '鹽埕埔', '前金', '美麗島', '信義國小', '文化中心', '五塊厝', '苓雅運動園區', '衛武營', '鳳山西站', '鳳山', '大東', '鳳山國中', '大寮'], '輕軌 (C)': ['籬仔內', '凱旋瑞田', '前鎮之星', '凱旋中華', '夢時代', '經貿園區', '軟體園區', '高雄展覽館', '旅運中心', '光榮碼頭', '真愛碼頭', '駁二大義', '駁二蓬萊', '哈瑪星', '壽山公園', '文武聖殿', '鼓山區公所', '鼓山', '馬卡道', '台鐵美術館', '美術館', '聯合醫院', '龍華國小', '愛河之心', '新上國小', '灣仔內', '高雄高工', '樹德家商', '科工館', '聖功醫院', '凱旋公園'] };
-        const mrtMap = { 'Taipei': { '中正區': ['台北車站', '善導寺', '忠孝新生', '中正紀念堂', '古亭', '西門', '台大醫院'], '萬華區': ['西門', '龍山寺'], '大安區': ['忠孝復興', '忠孝敦化', '國父紀念館', '信義安和', '大安', '科技大樓', '六張犁', '公館', '東門'], '信義區': ['市政府', '永春', '後山埤', '象山', '台北101/世貿'], '中山區': ['中山', '雙連', '民權西路', '圓山', '松江南京', '行天宮', '中山國小', '大直', '劍南路'], '松山區': ['南京復興', '台北小巨蛋', '南京三三民', '松山'], '大同區': ['大橋頭', '中山', '圓山', '民權西路'], '士林區': ['劍潭', '士林', '芝山', '明德'], '北投區': ['石牌', '唭哩岸', '奇岩', '北投', '新北投', '復興崗', '關渡'], '內湖區': ['西湖', '港墘', '文德', '內湖', '大湖公園', '葫洲', '東湖'], '南港區': ['南港', '南港展覽館', '南港軟體園區', '昆陽'], '文山區': ['動物園', '木柵', '萬芳醫院', '萬芳社區', '景美', '萬隆'] }, 'NewTaipei': { '板橋區': ['板橋', '府中', '新埔', '江子翠', '亞東醫院'], '三重區': ['三重', '菜寮', '台北橋', '三重國小', '三和國中', '徐匯中學'], '中和區': ['景安', '南勢角', '永安市場', '中和'], '永和區': ['頂溪', '永安市場'], '新莊區': ['新莊', '輔大', '丹鳳', '迴龍', '頭前庄'], '新店區': ['新店', '七張', '大坪林', '小碧潭', '新店區公所'], '淡水區': ['淡水', '紅樹林', '竹圍'], '林口區': ['林口'] } };
+        const mrtMap = { 'Taipei': { '中正區': ['台北車站', '善導寺', '忠孝新生', '中正紀念堂', '古亭', '西門', '台大醫院'], '萬華區': ['西門', '龍山寺'], '大安區': ['忠孝復興', '忠孝敦化', '國父紀念館', '信義安和', '大安', '科技大樓', '六張犁', '公館', '東門'], '信義區': ['市政府', '永春', '後山埤', '象山', '台北101/世貿'], '中山區': ['中山', '雙連', '民權西路', '圓山', '松江南京', '行天宮', '中山國小', '大直', '劍南路'], '松山區': ['南京復興', '台北小巨蛋', '南京三三民', '松山'], '大同區': ['大橋頭', '中山', '圓山', '民權西路'], '士林區': ['劍潭', '士林', '芝山', '明德'], '北投區': ['石牌', '唭哩岸', '奇岩', '北投', '新北投', '復興崗', '關渡'], '內湖區': ['西湖', '港墘', '文德', '內湖', '大湖公園', '葫洲', '東湖'], '南港區': ['南港', '南港展覽館', '南港軟體園區', '昆陽'], '文山區': ['動物園', '木柵', '萬芳醫院', '萬芳社區', '景美', '萬隆'] }, 'NewTaipei': { '板橋區': ['板橋', '府中', '新埔', '江子翠', '亞東醫院'], '三重區': ['三重', '菜寮', '台北橋', '三重國小', '三和國中', '徐匯中學'], '中和區': ['景安', '南勢角', '永安市場', '中和'], '永和區': ['頂溪', '永安市場'], '新莊區': ['新莊', '輔大', '丹鳳', '迴龍', '頭前庄'], '新店區': ['新店', '七張', '大坪林', '小碧潭', '新店區公所'], '淡水區': ['淡水', '紅樹林', '竹圍'], '林口區': ['機場捷運林口站'] } };
         const hsrMap = { 'Taipei': { '中正區': ['高鐵台北站'], '南港區': ['高鐵南港站'] }, 'NewTaipei': { '板橋區': ['高鐵板橋站'] }, 'Taoyuan': { '中壢區': ['高鐵桃園站'] }, 'HsinchuCounty': { '竹北市': ['高鐵新竹站'] }, 'Miaoli': { '後龍鎮': ['高鐵苗栗站'] }, 'Taichung': { '烏日區': ['高鐵台中站'] }, 'Changhua': { '田中鎮': ['高鐵彰化站'] }, 'Yunlin': { '虎尾鎮': ['高鐵雲林站'] }, 'ChiayiCounty': { '太保市': ['高鐵嘉義站'] }, 'Tainan': { '歸仁區': ['高鐵台南站'] }, 'Kaohsiung': { '左營區': ['高鐵左營站'] } };
         const trainMap = { 'Keelung': { '仁愛區': ['基隆'], '暖暖區': ['八堵'], '七堵區': ['七堵'] }, 'Taipei': { '中正區': ['台北'], '萬華區': ['萬華'], '松山區': ['松山'], '南港區': ['南港'] }, 'NewTaipei': { '板橋區': ['板橋'], '汐止區': ['汐止', '汐科'], '樹林區': ['樹林'], '鶯歌區': ['鶯歌'], '瑞芳區': ['瑞芳'] }, 'Taoyuan': { '桃園區': ['桃園'], '中壢區': ['中壢'], '楊梅區': ['楊梅'] }, 'Taichung': { '中區': ['台中'], '烏日區': ['新烏日'], '豐原區': ['豐原'] }, 'Tainan': { '東區': ['台南'], '永康區': ['永康'] }, 'Kaohsiung': { '三民區': ['高雄'], '左營區': ['新左營'], '鳳山區': ['鳳山'] }, 'Hualien': { '花蓮市': ['花蓮'] }, 'Taitung': { '台東市': ['台東'] } };
         const airportMap = { 'Taipei': { '松山區': ['台北松山機場'] }, 'Taoyuan': { '大園區': ['桃園國際機場'] }, 'Taichung': { '沙鹿區': ['台中國際機場'] }, 'Kaohsiung': { '小港區': ['高雄小港機場'] }, 'Penghu': { '湖西鄉': ['澎湖機場'] }, 'Kinmen': { '金湖鎮': ['金門機場'] }, 'Lienchiang': { '南竿鄉': ['馬祖南竿機場'] }, 'Taitung': { '台東市': ['台東機場'] } };
@@ -223,11 +144,7 @@
                 let linesData = (city === 'Taipei' ? mrtLinesTaipei : (city === 'NewTaipei' ? mrtLinesNewTaipei : (city === 'Taoyuan' ? mrtLinesTaoyuan : (city === 'Taichung' ? mrtLinesTaichung : (city === 'Kaohsiung' ? mrtLinesKaohsiung : null)))));
                 if (district === '全區' && linesData) {
                     let html = '<option value="">--- 請選擇捷運站 ---</option>';
-                    for (const line in linesData) {
-                        html += `<optgroup label="${line}">`;
-                        linesData[line].forEach(s => html += `<option value="${s}">${s}站</option>`);
-                        html += `</optgroup>`;
-                    }
+                    for (const line in linesData) { html += `<optgroup label="${line}">`; linesData[line].forEach(s => html += `<option value="${s}">${s}站</option>`); html += `</optgroup>`; }
                     mrtSel.innerHTML = html;
                 } else if (mrtMap[city] && mrtMap[city][district]) {
                     mrtSel.innerHTML = '<option value="">--- 請選擇 ---</option>' + mrtMap[city][district].map(s => `<option value="${s}">${s}站</option>`).join('');
@@ -243,19 +160,22 @@
             }
         }
 
-        /* --- 核心邏輯 (與 Google 版本一致) --- */
-        window.onload = function() { 
-            // 模擬獲取使用次數
-            updateUsageDisplay(15); 
-        };
-        
-        function updateUsageDisplay(count) { 
-            document.getElementById('usage-text').innerText = `今日剩餘次數：${count} 次`; 
-            const btn = document.getElementById('search-btn'); 
-            if (count <= 0) { btn.disabled = true; btn.innerText = "額度已滿"; } 
+        window.onload = function() { updateUsageDisplay(); };
+        function updateUsageDisplay() {
+            const today = new Date().toLocaleDateString();
+            const lastDate = localStorage.getItem('LAST_USE_DATE');
+            let usageCount = parseInt(localStorage.getItem('USAGE_COUNT') || '0');
+            if (lastDate !== today) { usageCount = 0; localStorage.setItem('LAST_USE_DATE', today); localStorage.setItem('USAGE_COUNT', '0'); }
+            const remaining = Math.max(0, DAILY_LIMIT - usageCount);
+            document.getElementById('usage-text').innerText = `今日剩餘次數：${remaining} 次`;
+            const btn = document.getElementById('search-btn');
+            if (remaining <= 0) { btn.disabled = true; btn.innerText = "額度已滿"; }
+            return remaining;
         }
 
         async function handleSearchClick() {
+            const remaining = updateUsageDisplay();
+            if (remaining <= 0) return;
             const cityKey = document.getElementById('city').value;
             const cityName = document.getElementById('city').options[document.getElementById('city').selectedIndex].text;
             const transport = document.getElementById('transport').value;
@@ -273,38 +193,33 @@
             if (transport === 'airport' && !hasAirport.includes(cityKey)) { alert(`⚠️ 抱歉，${cityName} 目前沒有提供民航客運的機場。`); return; }
 
             btn.disabled = true; btn.innerText = "搜尋中..."; loader.style.display = 'flex';
-
             const now = new Date();
             const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-            const userTimeString = `${days[now.getDay()]} ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
-
             const data = {
                 city: cityName, district: document.getElementById('district').value,
                 food: document.getElementById('food').options[document.getElementById('food').selectedIndex].text,
                 purpose: document.getElementById('purpose').options[document.getElementById('purpose').selectedIndex].text,
                 budget: document.getElementById('budget').options[document.getElementById('budget').selectedIndex].text,
-                people: document.getElementById('people').value, userTime: userTimeString,
+                people: document.getElementById('people').value, 
+                userTime: `${days[now.getDay()]} ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`,
                 mrtStation: document.getElementById('mrt-station').value,
                 filters: (document.getElementById('btn-hidden').classList.contains('selected') ? "隱藏版 " : "") + 
                          (document.getElementById('btn-open').classList.contains('selected') ? "營業中 " : "") + 
                          (document.getElementById('transport').options[document.getElementById('transport').selectedIndex].text)
             };
 
-            // 此處根據你的後端邏輯發送請求，這裡保留結構
             try {
                 const response = await fetch('/api/recommend', { method: 'POST', body: JSON.stringify(data) });
                 const res = await response.json();
                 loader.style.display = 'none'; btn.disabled = false; btn.innerText = "開始探索美食";
-                if(res && res.error) { alert(res.error); return; }
-                renderCards(res.data || res); // 兼容不同 API 回傳格式
-            } catch(e) {
-                loader.style.display = 'none'; btn.disabled = false; btn.innerText = "開始探索美食";
-            }
+                if (res.error) { alert(res.error); return; }
+                localStorage.setItem('USAGE_COUNT', (parseInt(localStorage.getItem('USAGE_COUNT') || '0') + 1).toString());
+                updateUsageDisplay(); renderCards(res);
+            } catch (e) { alert("系統忙碌或連線錯誤"); loader.style.display = 'none'; btn.disabled = false; }
         }
 
         let currentLikedList = [], swipedCount = 0, cardsRemaining = 0;
         function renderCards(restaurants) {
-            if (!restaurants || !restaurants.length) return;
             document.getElementById('main-ui').classList.add('blur-mode');
             const stackContainer = document.getElementById('stack'); stackContainer.innerHTML = '';
             document.getElementById('swiper-overlay').style.display = 'flex';
@@ -318,25 +233,12 @@
                 wrapper.appendChild(card); stackContainer.appendChild(wrapper); initSwipe(card, wrapper, res, restaurants.length === 1);
             });
         }
-
         function initSwipe(el, wrapper, resData, isLastOne) {
             let startX, moveX = 0; let isDone = false;
             const likeStamp = el.querySelector('.stamp-like'); const nopeStamp = el.querySelector('.stamp-nope');
             el.addEventListener('touchstart', (e) => { if(isDone) return; startX = e.touches[0].clientX; el.style.transition = 'none'; });
-            el.addEventListener('touchmove', (e) => {
-                if(isDone) return; moveX = e.touches[0].clientX - startX;
-                el.style.transform = `translateX(${moveX}px) rotate(${moveX/20}deg)`;
-                likeStamp.style.opacity = moveX > 20 ? Math.min(moveX/100, 1) : 0;
-                nopeStamp.style.opacity = moveX < -20 ? Math.min(Math.abs(moveX)/100, 1) : 0;
-            });
-            el.addEventListener('touchend', () => {
-                if(isDone) return; el.style.transition = 'transform 0.4s ease, opacity 0.4s ease';
-                if(Math.abs(moveX) > 100) {
-                    const dir = moveX > 0 ? 1 : -1;
-                    if(isLastOne) { if(dir === 1) { el.style.transform = 'translateX(0)'; likeStamp.style.opacity = 1; isDone = true; } else resetUI(); }
-                    else { if(dir === 1) currentLikedList.push(resData); el.style.transform = `translateX(${dir*150}%)`; setTimeout(() => { wrapper.remove(); swipedCount++; if(swipedCount === cardsRemaining) { if(currentLikedList.length > 0) renderCards(currentLikedList); else resetUI(); } }, 300); }
-                } else { el.style.transform = 'translateX(0)'; likeStamp.style.opacity = 0; nopeStamp.style.opacity = 0; }
-            });
+            el.addEventListener('touchmove', (e) => { if(isDone) return; moveX = e.touches[0].clientX - startX; el.style.transform = `translateX(${moveX}px) rotate(${moveX/20}deg)`; likeStamp.style.opacity = moveX > 20 ? Math.min(moveX/100, 1) : 0; nopeStamp.style.opacity = moveX < -20 ? Math.min(Math.abs(moveX)/100, 1) : 0; });
+            el.addEventListener('touchend', () => { if(isDone) return; el.style.transition = 'transform 0.4s ease, opacity 0.4s ease'; if(Math.abs(moveX) > 100) { const dir = moveX > 0 ? 1 : -1; if(isLastOne) { if(dir === 1) { el.style.transform = 'translateX(0)'; likeStamp.style.opacity = 1; isDone = true; } else resetUI(); } else { if(dir === 1) currentLikedList.push(resData); el.style.transform = `translateX(${dir*150}%)`; setTimeout(() => { wrapper.remove(); swipedCount++; if(swipedCount === cardsRemaining) { if(currentLikedList.length > 0) renderCards(currentLikedList); else resetUI(); } }, 300); } } else { el.style.transform = 'translateX(0)'; likeStamp.style.opacity = 0; nopeStamp.style.opacity = 0; } });
         }
         function resetUI() { document.getElementById('swiper-overlay').style.display = 'none'; document.getElementById('main-ui').classList.remove('blur-mode'); }
     </script>
